@@ -45,13 +45,13 @@ MinimizeButton({
     Color3.fromRGB(139, 0, 255)
 })
 task.spawn(function()
-    local v472 = 1
+    MinimizeButton({1
     while true do
         l_UIStroke_0.Color = v471[v472]
         v472 = v472 % #v471 + 1
         task.wait(0.3)
     end
-end)
+end})
        
 ------ Tab
      local Tab1o = MakeTab({Name = "Script Blox Fruits"})
