@@ -1556,12 +1556,12 @@ function redzlib:MakeWindow(Configs)
 	function Window:CloseBtn()
 		local Dialog = Window:Dialog({
 			Title = "Quang Huy",
-			Text = "Táº¯t Hay KhĂ´ng Táº¯t",
+			Text = "Táº¯t hay KhĂ´ng Táº¯t",
 			Options = {
-				{"Táº¯t áº ", function()
+				{"Táº¯t áº¡ ", function()
 					ScreenGui:Destroy()
 				end},
-				{"KhĂ´ng Táº¯t áº "}
+				{"KhĂ´ng áº¡"}
 			}
 		})
 	end
