@@ -12,15 +12,15 @@ local redzlib = {
     Themes = {
         QuangHuy = {
             ["Color Hub 1"] = ColorSequence.new({
-                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 30)),
-                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 100, 255)),
-                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 30))
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255,255,255)),
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255,255255)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255,255,255))
             }),
-            ["Color Hub 2"] = Color3.fromRGB(10, 20, 40),
-            ["Color Stroke"] = Color3.fromRGB(0, 120, 255),
-            ["Color Theme"] = Color3.fromRGB(50, 150, 255),
-            ["Color Text"] = Color3.fromRGB(200, 230, 255),
-            ["Color Dark Text"] = Color3.fromRGB(120, 170, 210)
+            ["Color Hub 2"] = Color3.fromRGB(255,255,255),
+            ["Color Stroke"] = Color3.fromRGB(255,255,255),
+            ["Color Theme"] = Color3.fromRGB(255,255,255),
+            ["Color Text"] = Color3.fromRGB(255,255,255),
+            ["Color Dark Text"] = Color3.fromRGB(255,255,255)
         }
     },
 	Info = {
