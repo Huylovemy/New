@@ -11,21 +11,31 @@ local PlayerMouse = Player:GetMouse()
 local redzlib = {
     Themes = {
         QuangHuy = {
+            -- Thay đổi dải màu nền (Gradient) sang màu đen/xám tối
             ["Color Hub 1"] = ColorSequence.new({
-                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 30)),
-                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 100, 255)),
-                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 30))
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)),     -- Đen
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(45, 45, 45)),  -- Xám tối (ở giữa để tạo độ sâu)
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))      -- Đen
             }),
-            ["Color Hub 2"] = Color3.fromRGB(10, 20, 40),
-            ["Color Stroke"] = Color3.fromRGB(0, 120, 255),
-            ["Color Theme"] = Color3.fromRGB(50, 150, 255),
-            ["Color Text"] = Color3.fromRGB(200, 230, 255),
-            ["Color Dark Text"] = Color3.fromRGB(120, 170, 210)
+            -- Màu nền chính của các khung
+            ["Color Hub 2"] = Color3.fromRGB(15, 15, 15), 
+            
+            -- Màu viền (Stroke) - để màu trắng hoặc xám sáng để nổi bật trên nền đen
+            ["Color Stroke"] = Color3.fromRGB(100, 100, 100), 
+            
+            -- Màu chủ đề (Nút bấm, thanh trượt...) - chuyển sang Trắng hoặc Xám
+            ["Color Theme"] = Color3.fromRGB(255, 255, 255), 
+            
+            -- Màu chữ chính
+            ["Color Text"] = Color3.fromRGB(255, 255, 255), 
+            
+            -- Màu chữ phụ (mô tả)
+            ["Color Dark Text"] = Color3.fromRGB(170, 170, 170)
         }
     },
-	Info = {
-		Version = "1.1.0"
-	},
+    Info = {
+        Version = "1.1.0"
+    },
 	Save = {
 		UISize = {550, 380},
 		TabSize = 160,
