@@ -21,7 +21,7 @@ local redzlib = {
             ["Color Hub 2"] = Color3.fromRGB(15, 15, 15), 
             
             -- Màu viền (Stroke) - để màu trắng hoặc xám sáng để nổi bật trên nền đen
-            ["Color Stroke"] = Color3.fromRGB(100, 100, 100), 
+            ["Color Stroke"] = Color3.fromRGB(255, 255, 255), 
             
             -- Màu chủ đề (Nút bấm, thanh trượt...) - chuyển sang Trắng hoặc Xám
             ["Color Theme"] = Color3.fromRGB(255, 255, 255), 
