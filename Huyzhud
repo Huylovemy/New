@@ -14,7 +14,7 @@ local redzlib = {
             -- Thay đổi dải màu nền (Gradient) sang màu đen/xám tối
             ["Color Hub 1"] = ColorSequence.new({
                 ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)),     -- Đen
-                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(45, 45, 45)),  -- Xám tối (ở giữa để tạo độ sâu)
+                ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 0, 0)),  -- Xám tối (ở giữa để tạo độ sâu)
                 ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))      -- Đen
             }),
             -- Màu nền chính của các khung
