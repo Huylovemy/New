@@ -1478,6 +1478,15 @@ function redzlib:MakeWindow(Configs)
 		BorderSizePixel = 0,
 		Name = "Tab Scroll"
 	}, {
+	    local Separator = InsertTheme(Create("Frame", Components, {
+    Size = UDim2.new(0, 1, 1, -TopBar.Size.Y.Offset), -- Độ rộng 1 pixel, chiều cao đầy đủ (trừ TopBar)
+    Position = UDim2.new(0, redzlib.Save.TabSize, 1, 0), -- Đặt tại vị trí kết thúc của dải Tab
+    AnchorPoint = Vector2.new(0, 1),
+    BackgroundColor3 = Theme["Color Stroke"], -- Sử dụng màu viền từ Theme
+    BorderSizePixel = 0,
+    Name = "Separator"
+}), "Stroke")
+
 		Create("UIPadding", {
 			PaddingLeft = UDim.new(0, 10),
 			PaddingRight = UDim.new(0, 10),
