@@ -28,7 +28,7 @@ local redzlib = {
             ["Color Text"] = Color3.fromRGB(240, 240, 240),
             ["Color Dark Text"] = Color3.fromRGB(180, 180, 180)
         }
-        
+     },
     Info = {
         Version = "1.1.0"
     },
