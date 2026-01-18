@@ -1414,6 +1414,12 @@ function redzlib:MakeWindow(Configs)
 		Rotation = 45
 	})MakeDrag(MainFrame)
 	
+	local MainStroke = Make("Stroke", MainFrame)
+        MainStroke.Thickness = 1.5 -- Độ dày của khung (bạn có thể chỉnh lên 2 nếu muốn dày hơn)
+        MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+        MainStroke.Thickness = 1.8 -- Độ dày của khung
+        MainStroke.Thickness = 1.8 -- Bạn có thể chỉnh độ dày tùy ý
+
 	local MainCorner = Make("Corner", MainFrame)
 	
 	local Components = Create("Folder", MainFrame, {
