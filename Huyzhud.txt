@@ -20,7 +20,7 @@ local redzlib = {
             ["Color Hub 2"] = Color3.fromRGB(25, 25, 25), 
             
             -- MÀU VIỀN: Chỉnh thành xám sáng để hiện rõ khung
-            ["Color Stroke"] = Color3.fromRGB(255,255,255), 
+            ["Color Stroke"] = Color3.fromRGB(0,0,0), 
             
             -- Màu các nút bấm và icon (để màu trắng hoặc xanh neon cho dễ nhìn)
             ["Color Theme"] = Color3.fromRGB(255, 255, 255), 
