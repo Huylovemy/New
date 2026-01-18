@@ -20,7 +20,7 @@ local redzlib = {
             ["Color Hub 2"] = Color3.fromRGB(25, 25, 25), 
             
             -- MÀU VIỀN: Chỉnh thành xám sáng để hiện rõ khung
-            ["Color Stroke"] = Color3.fromRGB(60, 60, 60), 
+            ["Color Stroke"] = Color3.fromRGB(255,255,255), 
             
             -- Màu các nút bấm và icon (để màu trắng hoặc xanh neon cho dễ nhìn)
             ["Color Theme"] = Color3.fromRGB(255, 255, 255), 
@@ -1382,8 +1382,8 @@ function redzlib:SetScale(NewScale)
 end
 
 function redzlib:MakeWindow(Configs)
-	local WTitle = Configs[1] or Configs.Name or Configs.Title or "redz Library V5"
-	local WMiniText = Configs[2] or Configs.SubTitle or "by : redz9999"
+	local WTitle = Configs[1] or Configs.Name or Configs.Title or "Bear Hub V1"
+	local WMiniText = Configs[2] or Configs.SubTitle or "by : Quang Huy"
 	
 	Settings.ScriptFile = Configs[3] or Configs.SaveFolder or false
 	
@@ -1413,7 +1413,11 @@ function redzlib:MakeWindow(Configs)
 	Make("Gradient", MainFrame, {
 		Rotation = 45
 	})MakeDrag(MainFrame)
-	
+	local MainStroke = Make("Stroke", MainFrame)
+        MainStroke.Thickness = 1.5 -- Độ dày của khung (bạn có thể chỉnh lên 2 nếu muốn dày hơn)
+        MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+        MainStroke.Thickness = 1.8 -- Độ dày của khung
+        
 	local MainCorner = Make("Corner", MainFrame)
 	
 	local Components = Create("Folder", MainFrame, {
