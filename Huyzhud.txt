@@ -1414,6 +1414,8 @@ function redzlib:MakeWindow(Configs)
 		Rotation = 45
 	})MakeDrag(MainFrame)
 	local MainStroke = Make("Stroke", MainFrame)
+        MainStroke.Thickness = 1.8
+	local MainStroke = Make("Stroke", MainFrame)
         MainStroke.Thickness = 1.5 -- Độ dày của khung (bạn có thể chỉnh lên 2 nếu muốn dày hơn)
         MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
         MainStroke.Thickness = 1.8 -- Độ dày của khung
@@ -1462,28 +1464,36 @@ function redzlib:MakeWindow(Configs)
 		}), "DarkText")
 	}), "Text")
 	
-	local MainScroll = InsertTheme(Create("ScrollingFrame", Components, {
-		Size = UDim2.new(0, redzlib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
-		ScrollBarImageColor3 = Theme["Color Theme"],
-		Position = UDim2.new(0, 0, 1, 0),
-		AnchorPoint = Vector2.new(0, 1),
-		ScrollBarThickness = 1.5,
-		BackgroundTransparency = 1,
-		ScrollBarImageTransparency = 0.2,
-		CanvasSize = UDim2.new(),
-		AutomaticCanvasSize = "Y",
-		ScrollingDirection = "Y",
-		BorderSizePixel = 0,
-		Name = "Tab Scroll"
-		
-		TAB
-    local TabStroke = Make("Stroke", TabHolder)
-        TabStroke.Thickness = 1
-        
-    local PageStroke = Make("Stroke", PageContainer)
-        PageStroke.Thickness = 1
-	}, {
-		Create("UIPadding", {
+-- 1. Phần thanh cuộn chứa Tab
+local MainScroll = InsertTheme(Create("ScrollingFrame", Components, {
+    Size = UDim2.new(0, redzlib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
+    Position = UDim2.new(0, 0, 1, 0),
+    AnchorPoint = Vector2.new(0, 1),
+    BackgroundTransparency = 1, -- Đã chỉnh trong suốt
+    BorderSizePixel = 0,
+    Name = "Tab Scroll"
+}, {
+    Create("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10), PaddingTop = UDim.new(0, 10), PaddingBottom = UDim.new(0, 10) }),
+    Create("UIListLayout", { Padding = UDim.new(0, 5) })
+}), "ScrollBar")
+
+-- THÊM VIỀN CHO THANH TAB
+local TabScrollStroke = Make("Stroke", MainScroll)
+TabScrollStroke.Thickness = 1
+
+-- 2. Phần khung chứa nội dung Page
+local Containers = Create("Frame", Components, {
+    Size = UDim2.new(1, -MainScroll.Size.X.Offset, 1, -TopBar.Size.Y.Offset),
+    Position = UDim2.new(1, 0, 1, 0),
+    AnchorPoint = Vector2.new(1, 1),
+    BackgroundTransparency = 1, -- Chỉnh trong suốt
+    Name = "Containers"
+})
+
+-- THÊM VIỀN CHO KHUNG NỘI DUNG
+local ContainerStroke = Make("Stroke", Containers)
+ContainerStroke.Thickness = 1
+
 			PaddingLeft = UDim.new(0, 10),
 			PaddingRight = UDim.new(0, 10),
 			PaddingTop = UDim.new(0, 10),
