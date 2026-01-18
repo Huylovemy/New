@@ -1413,11 +1413,7 @@ function redzlib:MakeWindow(Configs)
 	Make("Gradient", MainFrame, {
 		Rotation = 45
 	})MakeDrag(MainFrame)
-	local MainStroke = Make("Stroke", MainFrame)
-        MainStroke.Thickness = 1.5 -- Độ dày của khung (bạn có thể chỉnh lên 2 nếu muốn dày hơn)
-        MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        MainStroke.Thickness = 1.8 -- Độ dày của khung
-        
+	
 	local MainCorner = Make("Corner", MainFrame)
 	
 	local Components = Create("Folder", MainFrame, {
@@ -1475,9 +1471,6 @@ function redzlib:MakeWindow(Configs)
 		ScrollingDirection = "Y",
 		BorderSizePixel = 0,
 		Name = "Tab Scroll"
-		TAB
-    local TabStroke = Make("Stroke", TabHolder)
-       TabStroke.Thickness = 1
 	}, {
 		Create("UIPadding", {
 			PaddingLeft = UDim.new(0, 10),
