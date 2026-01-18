@@ -1404,53 +1404,82 @@ function redzlib:MakeWindow(Configs)
 	end;LoadFile()
 	
 	local UISizeX, UISizeY = unpack(redzlib.Save.UISize)
-	-- 1. Tạo Khung Chính (MainFrame) và thêm Viền
--- 1. Tạo Giao diện chính (MainFrame) có Viền
-local MainFrame = InsertTheme(Create("ImageButton", ScreenGui, {
-    Size = UDim2.fromOffset(UISizeX, UISizeY),
-    Position = UDim2.fromScale(0.5, 0.5),
-    AnchorPoint = Vector2.new(0.5, 0.5),
-    ClipsDescendants = true,
-    AutoButtonColor = false,
-    BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-}), "Hub 1")
-
--- Lệnh thêm viền cho Hub chính
-local MainStroke = Make("Stroke", MainFrame)
-MainStroke.Thickness = 1.8
-
--- 2. Tạo Thanh chứa Tab trong suốt và có Viền
-local MainScroll = InsertTheme(Create("ScrollingFrame", Components, {
-    Size = UDim2.new(0, redzlib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
-    Position = UDim2.new(0, 0, 1, 0),
-    AnchorPoint = Vector2.new(0, 1),
-    BackgroundTransparency = 1, -- Đã chỉnh trong suốt
-    BorderSizePixel = 0,
-    Name = "Tab Scroll"
-}, {
-    Create("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10), PaddingTop = UDim.new(0, 10), PaddingBottom = UDim.new(0, 10) }),
-    Create("UIListLayout", { Padding = UDim.new(0, 5) })
-}), "ScrollBar")
-
--- Lệnh thêm viền cho thanh Tab
-local TabStroke = Make("Stroke", MainScroll)
-TabStroke.Thickness = 1
-
--- 3. Tạo Khung nội dung trong suốt và có Viền
-local Containers = Create("Frame", Components, {
-    Size = UDim2.new(1, -MainScroll.Size.X.Offset, 1, -TopBar.Size.Y.Offset),
-    Position = UDim2.new(1, 0, 1, 0),
-    AnchorPoint = Vector2.new(1, 1),
-    BackgroundTransparency = 1, -- Đã chỉnh trong suốt
-    Name = "Containers"
-})
-
--- Lệnh thêm viền cho khung nội dung
-local ContainerStroke = Make("Stroke", Containers)
-ContainerStroke.Thickness = 1
-
-
-
+	local MainFrame = InsertTheme(Create("ImageButton", ScreenGui, {
+		Size = UDim2.fromOffset(UISizeX, UISizeY),
+		Position = UDim2.new(0.5, -UISizeX/2, 0.5, -UISizeY/2),
+		BackgroundTransparency = 1,
+		Name = "Hub"
+	}), "Main")
+	Make("Gradient", MainFrame, {
+		Rotation = 45
+	})MakeDrag(MainFrame)
+	local MainStroke = Make("Stroke", MainFrame)
+        MainStroke.Thickness = 1.5 -- Độ dày của khung (bạn có thể chỉnh lên 2 nếu muốn dày hơn)
+        MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+        MainStroke.Thickness = 1.8 -- Độ dày của khung
+        
+	local MainCorner = Make("Corner", MainFrame)
+	
+	local Components = Create("Folder", MainFrame, {
+		Name = "Components"
+	})
+	
+	local DropdownHolder = Create("Folder", ScreenGui, {
+		Name = "Dropdown"
+	})
+	
+	local TopBar = Create("Frame", Components, {
+		Size = UDim2.new(1, 0, 0, 28),
+		BackgroundTransparency = 1,
+		Name = "Top Bar"
+	})
+	
+	local Title = InsertTheme(Create("TextLabel", TopBar, {
+		Position = UDim2.new(0, 15, 0.5),
+		AnchorPoint = Vector2.new(0, 0.5),
+		AutomaticSize = "XY",
+		Text = WTitle,
+		TextXAlignment = "Left",
+		TextSize = 12,
+		TextColor3 = Theme["Color Text"],
+		BackgroundTransparency = 1,
+		Font = Enum.Font.GothamMedium,
+		Name = "Title"
+	}, {
+		InsertTheme(Create("TextLabel", {
+			Size = UDim2.fromScale(0, 1),
+			AutomaticSize = "X",
+			AnchorPoint = Vector2.new(0, 1),
+			Position = UDim2.new(1, 5, 0.9),
+			Text = WMiniText,
+			TextColor3 = Theme["Color Dark Text"],
+			BackgroundTransparency = 1,
+			TextXAlignment = "Left",
+			TextYAlignment = "Bottom",
+			TextSize = 8,
+			Font = Enum.Font.Gotham,
+			Name = "SubTitle"
+		}), "DarkText")
+	}), "Text")
+	
+	local MainScroll = InsertTheme(Create("ScrollingFrame", Components, {
+		Size = UDim2.new(0, redzlib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
+		ScrollBarImageColor3 = Theme["Color Theme"],
+		Position = UDim2.new(0, 0, 1, 0),
+		AnchorPoint = Vector2.new(0, 1),
+		ScrollBarThickness = 1.5,
+		BackgroundTransparency = 1,
+		ScrollBarImageTransparency = 0.2,
+		CanvasSize = UDim2.new(),
+		AutomaticCanvasSize = "Y",
+		ScrollingDirection = "Y",
+		BorderSizePixel = 0,
+		Name = "Tab Scroll"
+		TAB
+    local TabStroke = Make("Stroke", TabHolder)
+       TabStroke.Thickness = 1
+	}, {
+		Create("UIPadding", {
 			PaddingLeft = UDim.new(0, 10),
 			PaddingRight = UDim.new(0, 10),
 			PaddingTop = UDim.new(0, 10),
