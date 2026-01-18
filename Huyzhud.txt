@@ -1475,6 +1475,13 @@ function redzlib:MakeWindow(Configs)
 		ScrollingDirection = "Y",
 		BorderSizePixel = 0,
 		Name = "Tab Scroll"
+		
+		TAB
+    local TabStroke = Make("Stroke", TabHolder)
+        TabStroke.Thickness = 1
+        
+    local PageStroke = Make("Stroke", PageContainer)
+        PageStroke.Thickness = 1
 	}, {
 		Create("UIPadding", {
 			PaddingLeft = UDim.new(0, 10),
