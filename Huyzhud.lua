@@ -17,7 +17,7 @@ local Bearlib = {
                 ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255,255,255))
             }),
             -- Màu nền của các thành phần con (hơi sáng hơn nền chính một chút)
-            ["Color Hub 2"] = Color3.fromRGB(25, 25, 25), 
+            ["Color Hub 2"] = Color3.fromRGB(255,255,255), 
             
             -- MÀU VIỀN: Chỉnh thành xám sáng để hiện rõ khung
             ["Color Stroke"] = Color3.fromRGB(255,255,255), 
