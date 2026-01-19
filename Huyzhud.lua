@@ -13,8 +13,8 @@ local Bearlib = {
                 QuangHuy = {
             -- Nền đen hoàn toàn
             ["Color Hub 1"] = ColorSequence.new({
-                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0,0,0)),
-                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255,255,255))
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255,255,255)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0,0,0))
             }),
             -- Màu nền của các thành phần con (hơi sáng hơn nền chính một chút)
             ["Color Hub 2"] = Color3.fromRGB(255,255,255), 
