@@ -1886,5 +1886,152 @@ function Bearlib:MakeWindow(Configs)
 	MinimizeButton.Activated:Connect(Window.MinimizeBtn)
 	return Window
 end
+-- // Dán đoạn này vào trước dòng 'return Bearlib' //
+
+function Bearlib:KeySystem(Configs)
+    local Key = Configs.Key or ""
+    local Link = Configs.Link or ""
+    local Callback = Configs.Callback or function() end
+    local SavedKeyFile = "BearLib_Key_" .. (Configs.Name or "Hub") .. ".txt"
+
+    -- Tự động kiểm tra Key đã lưu
+    if isfile and isfile(SavedKeyFile) then
+        if readfile(SavedKeyFile) == Key then
+            Callback()
+            return
+        end
+    end
+
+    -- Tạo giao diện Key
+    local KeyScreen = Create("ScreenGui", CoreGui, { Name = "KeySystem" })
+    
+    -- Background mờ
+    local BackDrop = Create("Frame", KeyScreen, {
+        Size = UDim2.fromScale(1, 1),
+        BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+        BackgroundTransparency = 0.3
+    })
+    
+    -- Khung chính
+    local MainFrame = InsertTheme(Create("Frame", BackDrop, {
+        Size = UDim2.fromOffset(400, 220),
+        Position = UDim2.fromScale(0.5, 0.5),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundColor3 = Theme["Color Hub 2"]
+    }), "Frame")
+    Make("Corner", MainFrame)
+    Make("Stroke", MainFrame)
+    
+    -- Tiêu đề
+    InsertTheme(Create("TextLabel", MainFrame, {
+        Text = "KEY SYSTEM",
+        Font = Enum.Font.GothamBold,
+        TextSize = 20,
+        Size = UDim2.new(1, 0, 0, 40),
+        BackgroundTransparency = 1,
+        TextColor3 = Theme["Color Text"]
+    }), "Text")
+
+    -- Thông báo trạng thái
+    local StatusLabel = InsertTheme(Create("TextLabel", MainFrame, {
+        Text = "Vui lòng nhập Key để tiếp tục",
+        Font = Enum.Font.Gotham,
+        TextSize = 12,
+        Size = UDim2.new(1, 0, 0, 20),
+        Position = UDim2.new(0, 0, 0, 35),
+        BackgroundTransparency = 1,
+        TextColor3 = Theme["Color Dark Text"]
+    }), "DarkText")
+
+    -- Ô nhập Key
+    local InputFrame = InsertTheme(Create("Frame", MainFrame, {
+        Size = UDim2.new(0.8, 0, 0, 35),
+        Position = UDim2.fromScale(0.5, 0.4),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundColor3 = Theme["Color Hub 1"]
+    }), "Frame")
+    Make("Corner", InputFrame)
+    Make("Stroke", InputFrame)
+
+    local InputBox = InsertTheme(Create("TextBox", InputFrame, {
+        Size = UDim2.fromScale(1, 1),
+        BackgroundTransparency = 1,
+        Text = "",
+        PlaceholderText = "Nhập Key vào đây...",
+        TextColor3 = Theme["Color Text"],
+        Font = Enum.Font.GothamBold,
+        TextSize = 14
+    }), "Text")
+
+    -- Nút Check Key
+    local CheckBtn = Make("Button", MainFrame, {
+        Size = UDim2.new(0.35, 0, 0, 35),
+        Position = UDim2.fromScale(0.3, 0.75),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundColor3 = Theme["Color Hub 2"]
+    })
+    Make("Corner", CheckBtn)
+    Make("Stroke", CheckBtn)
+    
+    InsertTheme(Create("TextLabel", CheckBtn, {
+        Size = UDim2.fromScale(1, 1),
+        BackgroundTransparency = 1,
+        Text = "CHECK KEY",
+        Font = Enum.Font.GothamBold,
+        TextColor3 = Theme["Color Text"],
+        TextSize = 12
+    }), "Text")
+
+    -- Nút Get Key (Copy Link)
+    local GetKeyBtn = Make("Button", MainFrame, {
+        Size = UDim2.new(0.35, 0, 0, 35),
+        Position = UDim2.fromScale(0.7, 0.75),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        BackgroundColor3 = Theme["Color Hub 2"]
+    })
+    Make("Corner", GetKeyBtn)
+    Make("Stroke", GetKeyBtn)
+
+    InsertTheme(Create("TextLabel", GetKeyBtn, {
+        Size = UDim2.fromScale(1, 1),
+        BackgroundTransparency = 1,
+        Text = "COPY LINK",
+        Font = Enum.Font.GothamBold,
+        TextColor3 = Theme["Color Text"],
+        TextSize = 12
+    }), "Text")
+
+    -- Logic xử lý
+    CheckBtn.Activated:Connect(function()
+        if InputBox.Text == Key then
+            StatusLabel.Text = "Key chính xác! Đang tải..."
+            StatusLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+            
+            -- Lưu key
+            if writefile then
+                writefile(SavedKeyFile, Key)
+            end
+            
+            task.wait(1)
+            KeyScreen:Destroy()
+            Callback() -- Chạy script chính
+        else
+            StatusLabel.Text = "Key sai! Vui lòng thử lại."
+            StatusLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+            InputBox.Text = ""
+        end
+    end)
+
+    GetKeyBtn.Activated:Connect(function()
+        if setclipboard then
+            setclipboard(Link)
+            StatusLabel.Text = "Đã copy link lấy Key!"
+            StatusLabel.TextColor3 = Color3.fromRGB(0, 255, 255)
+            task.wait(2)
+            StatusLabel.Text = "Vui lòng nhập Key để tiếp tục"
+            StatusLabel.TextColor3 = Theme["Color Dark Text"]
+        end
+    end)
+end
 
 return Bearlib
