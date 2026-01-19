@@ -13,8 +13,8 @@ local Bearlib = {
                 QuangHuy = {
             -- Nền đen hoàn toàn
             ["Color Hub 1"] = ColorSequence.new({
-                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(10, 10, 10)),
-                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(10, 10, 10))
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255,255,255)),
+                ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255,255,255))
             }),
             -- Màu nền của các thành phần con (hơi sáng hơn nền chính một chút)
             ["Color Hub 2"] = Color3.fromRGB(25, 25, 25), 
@@ -25,8 +25,8 @@ local Bearlib = {
             -- Màu các nút bấm và icon (để màu trắng hoặc xanh neon cho dễ nhìn)
             ["Color Theme"] = Color3.fromRGB(0,0,0), 
             
-            ["Color Text"] = Color3.fromRGB(255, 2255, 255),
-            ["Color Dark Text"] = Color3.fromRGB(255,255,255)
+            ["Color Text"] = Color3.fromRGB(0,0,0),
+            ["Color Dark Text"] = Color3.fromRGB(0,0,0)
         }
      },
     Info = {
