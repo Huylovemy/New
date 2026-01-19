@@ -25,8 +25,8 @@ local Bearlib = {
             -- Màu các nút bấm và icon (để màu trắng hoặc xanh neon cho dễ nhìn)
             ["Color Theme"] = Color3.fromRGB(0,0,0), 
             
-            ["Color Text"] = Color3.fromRGB(240, 240, 240),
-            ["Color Dark Text"] = Color3.fromRGB(180, 180, 180)
+            ["Color Text"] = Color3.fromRGB(255, 2255, 255),
+            ["Color Dark Text"] = Color3.fromRGB(255,255,255)
         }
      },
     Info = {
