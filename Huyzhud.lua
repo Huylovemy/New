@@ -1,63 +1,3 @@
-local CorrectKey = "Huydepzai" -- Thay đổi Key của bạn tại đây
-local HasKey = false
-
--- Giao diện nhập Key đơn giản
-local KeyGui = Instance.new("ScreenGui")
-KeyGui.Name = "KeySystem"
-KeyGui.Parent = game:GetService("CoreGui")
-
-local MainKeyFrame = Instance.new("Frame")
-MainKeyFrame.Size = UDim2.new(0, 300, 0, 150)
-MainKeyFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
-MainKeyFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-MainKeyFrame.BorderSizePixel = 0
-MainKeyFrame.Parent = KeyGui
-
-local UICorner = Instance.new("UICorner")
-UICorner.Parent = MainKeyFrame
-
-local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.Text = "HỆ THỐNG KEY"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.BackgroundTransparency = 1
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 18
-Title.Parent = MainKeyFrame
-
-local KeyInput = Instance.new("TextBox")
-KeyInput.Size = UDim2.new(0, 240, 0, 35)
-KeyInput.Position = UDim2.new(0.5, -120, 0.4, 0)
-KeyInput.PlaceholderText = "Nhập Key tại đây..."
-KeyInput.Text = ""
-KeyInput.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyInput.Parent = MainKeyFrame
-
-local SubmitBtn = Instance.new("TextButton")
-SubmitBtn.Size = UDim2.new(0, 100, 0, 30)
-SubmitBtn.Position = UDim2.new(0.5, -50, 0.75, 0)
-SubmitBtn.Text = "XÁC NHẬN"
-SubmitBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-SubmitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-SubmitBtn.Font = Enum.Font.GothamBold
-SubmitBtn.Parent = MainKeyFrame
-
--- Hàm xử lý khi bấm nút
-SubmitBtn.MouseButton1Click:Connect(function()
-    if KeyInput.Text == CorrectKey then
-        HasKey = true
-        KeyGui:Destroy() -- Xóa giao diện Key
-        print("Key Đúng! Đang mở Hub...")
-        -- Sau khi nhập đúng, bạn gọi hàm khởi tạo Hub ở đây
-        StartHub() 
-    else
-        KeyInput.Text = ""
-        KeyInput.PlaceholderText = "SAI KEY! Vui lòng thử lại"
-        KeyInput.PlaceholderColor3 = Color3.fromRGB(255, 0, 0)
-    end
-end)
-
 local MarketplaceService = game:GetService("MarketplaceService")
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
@@ -73,7 +13,7 @@ local Bearlib = {
                 QuangHuy = {
             -- Nền đen hoàn toàn
             ["Color Hub 1"] = ColorSequence.new({
-                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255,255,255)),
+                ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0,0,0)),
                 ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255,255,255))
             }),
             -- Màu nền của các thành phần con (hơi sáng hơn nền chính một chút)
