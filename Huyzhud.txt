@@ -713,6 +713,11 @@ function Bearlib:MakeWindow(Configs)
 		MainScroll.Size = UDim2.new(0, ControlSize2.Position.X.Offset, 1, -TopBar.Size.Y.Offset)
 		Containers.Size = UDim2.new(1, -MainScroll.Size.X.Offset, 1, -TopBar.Size.Y.Offset)
 		MainFrame.Size = ControlSize1.Position
+		Separator.Position = UDim2.new(0, ControlSize2.Position.X.Offset, 1, 0) 
+    
+    -- Cập nhật kích thước khu vực nội dung (Containers) và khung chính
+    Containers.Size = UDim2.new(1, -MainScroll.Size.X.Offset, 1, -TopBar.Size.Y.Offset)
+    MainFrame.Size = ControlSize1.Position
 	end
 	
 	ControlSize1:GetPropertyChangedSignal("Position"):Connect(ControlSize)
