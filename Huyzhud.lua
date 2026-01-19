@@ -46,6 +46,8 @@ local Bearlib = {
 	Tabs = {},
 	Icons = (function()
 		return {
+		    ["sword"] = "rbxassetid://10734975486",
+			["swords"] = "rbxassetid://10734975692",
 			["moon"] = "rbxassetid://10734897102"
 		}
 	end)()
