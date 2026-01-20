@@ -541,7 +541,7 @@ function Bearlib:SetTheme(NewTheme)
 	SaveJson("Bear library.json", Bearlib.Save)
 	Theme = Bearlib.Themes[NewTheme]
 	
-	Comnection:FireConnection("ThemeChanged", NewTheme)
+	Connection:FireConnection("ThemeChanged", NewTheme)
 	table.foreach(Bearlib.Instances, function(_,Val)
 		if Val.Type == "Gradient" then
 			Val.Instance.Color = Theme["Color Hub 1"]
@@ -2009,8 +2009,11 @@ function Bearlib:KeySystem(Configs)
             
             -- Lưu key
             if writefile then
-                writefile(SavedKeyFile, Key)
-            end
+    pcall(function()
+        writefile(SavedKeyFile, Key)
+    end)
+end
+
             
             task.wait(1)
             KeyScreen:Destroy()
