@@ -1,7 +1,8 @@
 --[[ 
-    BEAR LIBRARY - REMASTERED PREMIUM VERSION
-    Based on source: Huyzhud.txt
-    Upgraded by: Gemini AI
+    BEAR LIBRARY - REMASTERED PREMIUM VERSION (FIXED BY GEMINI)
+    - Fixed: Window:Minimize() missing
+    - Fixed: MakeTab vs AddTab compatibility
+    - Fixed: Title vs Name config
 ]]
 
 local MarketplaceService = game:GetService("MarketplaceService")
@@ -20,17 +21,17 @@ local ProtectGui = protectgui or (syn and syn.protect_gui) or (function() end)
 local Bearlib = {
     Themes = {
         Default = {
-            ["Main"] = Color3.fromRGB(25, 25, 30), -- Nền chính tối hơn, hiện đại
-            ["Secondary"] = Color3.fromRGB(35, 35, 40), -- Nền phụ
-            ["Stroke"] = Color3.fromRGB(60, 60, 70), -- Viền tinh tế
-            ["Accent"] = Color3.fromRGB(0, 122, 255), -- Màu xanh iOS (Premium Blue)
+            ["Main"] = Color3.fromRGB(25, 25, 30),
+            ["Secondary"] = Color3.fromRGB(35, 35, 40),
+            ["Stroke"] = Color3.fromRGB(60, 60, 70),
+            ["Accent"] = Color3.fromRGB(0, 122, 255),
             ["Text"] = Color3.fromRGB(255, 255, 255),
             ["SubText"] = Color3.fromRGB(170, 170, 170),
-            ["Shadow"] = "rbxassetid://6015897843" -- Asset bóng đổ
+            ["Shadow"] = "rbxassetid://6015897843"
         }
     },
-    Info = { Version = "2.0.0 Premium" },
-    Save = { UISize = {550, 350}, TabSize = 160, Theme = "Default" }, -- Tăng kích thước mặc định cho thoáng
+    Info = { Version = "2.0.0 Premium Fixed" },
+    Save = { UISize = {550, 350}, TabSize = 160, Theme = "Default" },
     Settings = {},
     Tabs = {},
     Icons = {
@@ -41,7 +42,7 @@ local Bearlib = {
 }
 
 local ViewportSize = workspace.CurrentCamera.ViewportSize
-local UIScale = ViewportSize.Y / 1080 -- Scale theo chuẩn 1080p
+local UIScale = ViewportSize.Y / 1080
 local Theme = Bearlib.Themes.Default
 
 -- // Utility Functions // --
@@ -64,7 +65,6 @@ local function Tween(Object, Info, Properties, Wait)
     return Anim
 end
 
--- Hiệu ứng Gợn sóng (Ripple Effect) cho nút bấm
 local function CreateRipple(Button)
     task.spawn(function()
         local Ripple = Create("ImageLabel", {
@@ -118,7 +118,6 @@ local function MakeDrag(Frame)
     UserInputService.InputChanged:Connect(function(Input)
         if Input == DragInput and Dragging then
             local Delta = Input.Position - DragStart
-            -- Sử dụng Tween để kéo mượt hơn thay vì gán trực tiếp
             Tween(Frame, {0.05, Enum.EasingStyle.Sine}, {
                 Position = UDim2.new(StartPos.X.Scale, StartPos.X.Offset + Delta.X, StartPos.Y.Scale, StartPos.Y.Offset + Delta.Y)
             })
@@ -143,15 +142,15 @@ else
 end
 
 function Bearlib:MakeWindow(Configs)
-    local Title = Configs.Name or Configs[1] or "Bear Hub"
+    -- [FIX 3] Hỗ trợ cả config Title và Name
+    local Title = Configs.Name or Configs.Title or Configs[1] or "Bear Hub"
     local SubTitle = Configs.SubTitle or Configs[2] or "Premium Edition"
     
-    -- Main Frame (Shadow Holder)
     local ShadowHolder = Create("ImageLabel", {
         Name = "Shadow",
         Parent = ScreenGui,
         BackgroundTransparency = 1,
-        Image = Theme["Shadow"], -- Shadow Asset
+        Image = Theme["Shadow"],
         ImageColor3 = Color3.new(0,0,0),
         ImageTransparency = 0.4,
         Position = UDim2.new(0.5, -Bearlib.Save.UISize[1]/2, 0.5, -Bearlib.Save.UISize[2]/2),
@@ -174,7 +173,6 @@ function Bearlib:MakeWindow(Configs)
 
     MakeDrag(ShadowHolder)
 
-    -- Top Bar
     local TopBar = Create("Frame", {
         Parent = MainFrame,
         Size = UDim2.new(1, 0, 0, 40),
@@ -184,7 +182,7 @@ function Bearlib:MakeWindow(Configs)
         Create("TextLabel", {
             Name = "Title",
             Text = Title,
-            FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold), -- Font Gotham Bold Modern
+            FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold),
             TextColor3 = Theme["Text"],
             TextSize = 16,
             TextXAlignment = Enum.TextXAlignment.Left,
@@ -199,14 +197,13 @@ function Bearlib:MakeWindow(Configs)
             TextColor3 = Theme["SubText"],
             TextSize = 11,
             TextXAlignment = Enum.TextXAlignment.Left,
-            Position = UDim2.new(0, 15 + (#Title * 10), 0, 2), -- Offset dynamic theo title
+            Position = UDim2.new(0, 15 + (#Title * 10), 0, 2),
             Size = UDim2.new(0.5, 0, 1, 0),
             BackgroundTransparency = 1,
             TextTransparency = 0.4
         })
     })
 
-    -- Divider
     Create("Frame", {
         Parent = TopBar,
         Size = UDim2.new(1, 0, 0, 1),
@@ -216,7 +213,6 @@ function Bearlib:MakeWindow(Configs)
         BackgroundTransparency = 0.5
     })
 
-    -- Sidebar (Tabs)
     local Sidebar = Create("ScrollingFrame", {
         Name = "Sidebar",
         Parent = MainFrame,
@@ -232,7 +228,6 @@ function Bearlib:MakeWindow(Configs)
         Create("UIListLayout", {Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder})
     })
 
-    -- Separator Vertical
     Create("Frame", {
         Parent = MainFrame,
         Size = UDim2.new(0, 1, 1, -41),
@@ -242,7 +237,6 @@ function Bearlib:MakeWindow(Configs)
         BackgroundTransparency = 0.5
     })
 
-    -- Container Holder
     local ContainerHolder = Create("Frame", {
         Name = "ContainerHolder",
         Parent = MainFrame,
@@ -253,12 +247,16 @@ function Bearlib:MakeWindow(Configs)
 
     local Window = {Tabs = {}}
     local FirstTab = true
+    
+    -- [FIX 1] Thêm hàm Minimize để nút Toggle hoạt động
+    function Window:Minimize()
+        ShadowHolder.Visible = not ShadowHolder.Visible
+    end
 
     function Window:AddTab(Config)
         local TabName = Config.Name or Config[1] or "Tab"
         local TabIcon = Config.Icon or Config[2] or ""
 
-        -- Tab Button
         local TabBtn = Create("TextButton", {
             Parent = Sidebar,
             Size = UDim2.new(1, 0, 0, 32),
@@ -287,7 +285,6 @@ function Bearlib:MakeWindow(Configs)
             })
         })
 
-        -- Tab Container
         local Container = Create("ScrollingFrame", {
             Parent = ContainerHolder,
             Size = UDim2.new(1, 0, 1, 0),
@@ -302,7 +299,6 @@ function Bearlib:MakeWindow(Configs)
             Create("UIListLayout", {Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder})
         })
 
-        -- Tab Logic
         if FirstTab then
             Container.Visible = true
             TabBtn.BackgroundTransparency = 0
@@ -330,7 +326,6 @@ function Bearlib:MakeWindow(Configs)
 
         local TabObj = {}
 
-        -- [[ SECTIONS ]]
         function TabObj:AddSection(Title)
             Create("TextLabel", {
                 Parent = Container,
@@ -344,7 +339,6 @@ function Bearlib:MakeWindow(Configs)
             })
         end
 
-        -- [[ BUTTON ]]
         function TabObj:AddButton(Config)
             local Name = Config.Name or Config[1]
             local Callback = Config.Callback or function() end
@@ -369,7 +363,7 @@ function Bearlib:MakeWindow(Configs)
                     TextXAlignment = Enum.TextXAlignment.Left
                 }),
                 Create("ImageLabel", {
-                    Image = "rbxassetid://10709791437", -- Mouse Click Icon
+                    Image = "rbxassetid://10709791437",
                     Size = UDim2.new(0, 16, 0, 16),
                     Position = UDim2.new(1, -26, 0.5, -8),
                     BackgroundTransparency = 1,
@@ -380,14 +374,12 @@ function Bearlib:MakeWindow(Configs)
             Btn.MouseButton1Click:Connect(function()
                 CreateRipple(Btn)
                 Callback()
-                -- Animation nhấn xuống
                 Tween(Btn, {0.1}, {Size = UDim2.new(1, -2, 0, 34)})
                 task.wait(0.1)
                 Tween(Btn, {0.1}, {Size = UDim2.new(1, 0, 0, 36)})
             end)
         end
 
-        -- [[ TOGGLE ]]
         function TabObj:AddToggle(Config)
             local Name = Config.Name or Config[1]
             local Default = Config.Default or false
@@ -436,15 +428,12 @@ function Bearlib:MakeWindow(Configs)
             ToggleFrame.MouseButton1Click:Connect(function()
                 State = not State
                 CreateRipple(ToggleFrame)
-                
                 Tween(Switch, {0.3, Enum.EasingStyle.Quart}, {BackgroundColor3 = State and Theme["Accent"] or Color3.fromRGB(50,50,50)})
                 Tween(Circle, {0.3, Enum.EasingStyle.Quart}, {Position = State and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)})
-                
                 Callback(State)
             end)
         end
 
-        -- [[ SLIDER ]]
         function TabObj:AddSlider(Config)
             local Name = Config.Name or Config[1]
             local Min, Max = Config.Min or 0, Config.Max or 100
@@ -500,21 +489,10 @@ function Bearlib:MakeWindow(Configs)
                 Create("UICorner", {CornerRadius = UDim.new(1, 0)})
             })
 
-            local Circle = Create("Frame", {
-                Parent = Fill,
-                Size = UDim2.new(0, 12, 0, 12),
-                Position = UDim2.new(1, -6, 0.5, -6),
-                BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            }, {
-                Create("UICorner", {CornerRadius = UDim.new(1, 0)})
-            })
-
             local Dragging = false
-
             local function Update(Input)
                 local SizeX = math.clamp((Input.Position.X - Bar.AbsolutePosition.X) / Bar.AbsoluteSize.X, 0, 1)
                 local Value = math.floor(Min + ((Max - Min) * SizeX))
-                
                 Tween(Fill, {0.1}, {Size = UDim2.new(SizeX, 0, 1, 0)})
                 ValueLabel.Text = tostring(Value)
                 Callback(Value)
@@ -540,7 +518,6 @@ function Bearlib:MakeWindow(Configs)
             end)
         end
         
-        -- [[ TEXTBOX ]]
         function TabObj:AddTextBox(Config)
             local Name = Config.Name or "Input"
             local Placeholder = Config.Placeholder or "Type here..."
@@ -588,6 +565,11 @@ function Bearlib:MakeWindow(Configs)
         end
 
         return TabObj
+    end
+
+    -- [FIX 2] Tạo alias để MakeTab cũng hoạt động giống AddTab
+    function Window:MakeTab(...)
+        return Window:AddTab(...)
     end
 
     return Window
