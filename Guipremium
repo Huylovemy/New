@@ -58,7 +58,8 @@ local function Create(Name, Properties, Children)
 end
 
 local function Tween(Object, Info, Properties, Wait)
-    local Anim = TweenService:Create(Object, TweenInfo.new(unpack(Info)), Properties)
+    local Anim =
+TweenService:Create(Object, TweenInfo.new(unpack(Info)), Properties)
     Anim:Play()
     if Wait then Anim.Completed:Wait() end
     return Anim
@@ -152,7 +153,8 @@ function Bearlib:MakeWindow(Configs)
         Parent = ScreenGui,
         BackgroundTransparency = 1,
         Image = Theme["Shadow"], -- Shadow Asset
-        ImageColor3 = Color3.new(0,0,0),
+        ImageColor3 =
+Color3.new(0,0,0),
         ImageTransparency = 0.4,
         Position = UDim2.new(0.5, -Bearlib.Save.UISize[1]/2, 0.5, -Bearlib.Save.UISize[2]/2),
         Size = UDim2.fromOffset(Bearlib.Save.UISize[1] + 30, Bearlib.Save.UISize[2] + 30),
@@ -288,7 +290,8 @@ function Bearlib:MakeWindow(Configs)
         })
 
         -- Tab Container
-        local Container = Create("ScrollingFrame", {
+        local Container =
+Create("ScrollingFrame", {
             Parent = ContainerHolder,
             Size = UDim2.new(1, 0, 1, 0),
             BackgroundTransparency = 1,
@@ -521,4 +524,77 @@ function Bearlib:MakeWindow(Configs)
             end
 
             SliderFrame.InputBegan:Connect(function(Input)
-                if Input.UserInputType == Enum.UserInputType.MouseButton1 o
+                if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+                    Dragging = true
+                    Update(Input)
+                end
+            end)
+
+            UserInputService.InputChanged:Connect(function(Input)
+                if Dragging and (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch) then
+                    Update(Input)
+                end
+            end)
+
+            UserInputService.InputEnded:Connect(function(Input)
+                if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+                    Dragging = false
+                end
+            end)
+        end
+        
+        -- [[ TEXTBOX ]]
+        function
+TabObj:AddTextBox(Config)
+            local Name = Config.Name or "Input"
+            local Placeholder = Config.Placeholder or "Type here..."
+            local Callback = Config.Callback or function() end
+            
+            local BoxFrame = Create("Frame", {
+                Parent = Container,
+                Size = UDim2.new(1, 0, 0, 36),
+                BackgroundColor3 = Theme["Secondary"],
+            }, {
+                Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
+                Create("UIStroke", {Color = Theme["Stroke"], Thickness = 1}),
+                Create("TextLabel", {
+                    Text = Name,
+                    TextColor3 = Theme["Text"],
+                    Font = Enum.Font.GothamMedium,
+                    TextSize = 13,
+                    Size = UDim2.new(0.4, 0, 1, 0),
+                    Position = UDim2.new(0, 10, 0, 0),
+                    BackgroundTransparency = 1,
+                    TextXAlignment = Enum.TextXAlignment.Left
+                })
+            })
+            
+            local Input = Create("TextBox", {
+                Parent = BoxFrame,
+                Size = UDim2.new(0.5, -10, 0.8, 0),
+                Position = UDim2.new(0.5, 0, 0.1, 0),
+                BackgroundColor3 = Color3.fromRGB(20, 20, 25),
+                BackgroundTransparency = 0.5,
+                Text = "",
+                PlaceholderText = Placeholder,
+                TextColor3 = Theme["Text"],
+                Font = Enum.Font.Gotham,
+                TextSize = 12
+            }, {
+                Create("UICorner", {CornerRadius = UDim.new(0, 4)})
+            })
+            
+            Input.FocusLost:Connect(function(Enter)
+                if Enter then
+                    Callback(Input.Text)
+                end
+            end)
+        end
+
+        return TabObj
+    end
+
+    return Window
+end
+
+return Bearlib
