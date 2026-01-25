@@ -1,0 +1,524 @@
+--[[ 
+    BEAR LIBRARY - REMASTERED PREMIUM VERSION
+    [span_0](start_span)Based on source: Huyzhud.txt[span_0](end_span)
+    Upgraded by: Gemini AI
+]]
+
+local MarketplaceService = game:GetService("MarketplaceService")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local HttpService = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local PlayerMouse = Player:GetMouse()
+
+-- Kiểm tra Executor có hỗ trợ ProtectGui không để ẩn UI
+local ProtectGui = protectgui or (syn and syn.protect_gui) or (function() end)
+
+local Bearlib = {
+    Themes = {
+        Default = {
+            ["Main"] = Color3.fromRGB(25, 25, 30), -- Nền chính tối hơn, hiện đại
+            ["Secondary"] = Color3.fromRGB(35, 35, 40), -- Nền phụ
+            ["Stroke"] = Color3.fromRGB(60, 60, 70), -- Viền tinh tế
+            ["Accent"] = Color3.fromRGB(0, 122, 255), -- Màu xanh iOS (Premium Blue)
+            ["Text"] = Color3.fromRGB(255, 255, 255),
+            ["SubText"] = Color3.fromRGB(170, 170, 170),
+            ["Shadow"] = "rbxassetid://6015897843" -- Asset bóng đổ
+        }
+    },
+    Info = { Version = "2.0.0 Premium" },
+    [span_1](start_span)Save = { UISize = {550, 350}, TabSize = 160, Theme = "Default" }, -- Tăng kích thước mặc định cho thoáng[span_1](end_span)
+    Settings = {},
+    Tabs = {},
+    Icons = {
+        ["sword"] = "rbxassetid://10734975486",
+        ["settings"] = "rbxassetid://10734950309",
+        ["home"] = "rbxassetid://10709782430"
+    }
+}
+
+local ViewportSize = workspace.CurrentCamera.ViewportSize
+local UIScale = ViewportSize.Y / 1080 -- Scale theo chuẩn 1080p
+local Theme = Bearlib.Themes.Default
+
+-- // Utility Functions // --
+
+local function Create(Name, Properties, Children)
+    local Object = Instance.new(Name)
+    for i, v in pairs(Properties or {}) do
+        Object[i] = v
+    end
+    for _, Child in pairs(Children or {}) do
+        Child.Parent = Object
+    end
+    return Object
+end
+
+local function Tween(Object, Info, Properties, Wait)
+    local Anim = TweenService:Create(Object, TweenInfo.new(unpack(Info)), Properties)
+    Anim:Play()
+    if Wait then Anim.Completed:Wait() end
+    return Anim
+end
+
+-- Hiệu ứng Gợn sóng (Ripple Effect) cho nút bấm
+local function CreateRipple(Button)
+    task.spawn(function()
+        local Ripple = Create("ImageLabel", {
+            Name = "Ripple",
+            Parent = Button,
+            BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+            BackgroundTransparency = 0.85,
+            BorderSizePixel = 0,
+            ZIndex = 10,
+            Image = "rbxassetid://2708891598",
+            ImageColor3 = Color3.fromRGB(255, 255, 255),
+            ImageTransparency = 0.8,
+            ScaleType = Enum.ScaleType.Fit,
+        })
+        
+        local Mouse = Player:GetMouse()
+        local X, Y = Mouse.X - Button.AbsolutePosition.X, Mouse.Y - Button.AbsolutePosition.Y
+        Ripple.Position = UDim2.new(0, X, 0, Y)
+        Ripple.Size = UDim2.new(0, 0, 0, 0)
+
+        local Size = math.max(Button.AbsoluteSize.X, Button.AbsoluteSize.Y) * 1.5
+        Tween(Ripple, {0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out}, {Size = UDim2.new(0, Size, 0, Size), Position = UDim2.new(0, X - Size/2, 0, Y - Size/2), ImageTransparency = 1})
+        task.wait(0.5)
+        Ripple:Destroy()
+    end)
+end
+
+local function MakeDrag(Frame)
+    local Dragging, DragInput, DragStart, StartPos
+    
+    Frame.InputBegan:Connect(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+            Dragging = true
+            DragStart = Input.Position
+            StartPos = Frame.Position
+            
+            Input.Changed:Connect(function()
+                if Input.UserInputState == Enum.UserInputState.End then
+                    Dragging = false
+                end
+            end)
+        end
+    end)
+    
+    Frame.InputChanged:Connect(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
+            DragInput = Input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(Input)
+        if Input == DragInput and Dragging then
+            local Delta = Input.Position - DragStart
+            -- Sử dụng Tween để kéo mượt hơn thay vì gán trực tiếp
+            Tween(Frame, {0.05, Enum.EasingStyle.Sine}, {
+                Position = UDim2.new(StartPos.X.Scale, StartPos.X.Offset + Delta.X, StartPos.Y.Scale, StartPos.Y.Offset + Delta.Y)
+            })
+        end
+    end)
+end
+
+-- // Main Library // --
+
+local ScreenGui = Create("ScreenGui", {
+    Name = "BearHub_Premium",
+    ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+    IgnoreGuiInset = true,
+    ResetOnSpawn = false
+})
+
+if syn and syn.protect_gui then
+    syn.protect_gui(ScreenGui)
+    ScreenGui.Parent = CoreGui
+else
+    ScreenGui.Parent = CoreGui
+end
+
+function Bearlib:MakeWindow(Configs)
+    local Title = Configs.Name or Configs[1] or "Bear Hub"
+    local SubTitle = Configs.SubTitle or Configs[2] or "Premium Edition"
+    
+    -- Main Frame (Shadow Holder)
+    local ShadowHolder = Create("ImageLabel", {
+        Name = "Shadow",
+        Parent = ScreenGui,
+        BackgroundTransparency = 1,
+        Image = Theme["Shadow"], -- Shadow Asset
+        ImageColor3 = Color3.new(0,0,0),
+        ImageTransparency = 0.4,
+        Position = UDim2.new(0.5, -Bearlib.Save.UISize[1]/2, 0.5, -Bearlib.Save.UISize[2]/2),
+        Size = UDim2.fromOffset(Bearlib.Save.UISize[1] + 30, Bearlib.Save.UISize[2] + 30),
+        SliceCenter = Rect.new(10, 10, 118, 118),
+        ScaleType = Enum.ScaleType.Slice
+    })
+
+    local MainFrame = Create("Frame", {
+        Name = "MainFrame",
+        Parent = ShadowHolder,
+        BackgroundColor3 = Theme["Main"],
+        Position = UDim2.new(0, 15, 0, 15),
+        Size = UDim2.new(1, -30, 1, -30),
+        ClipsDescendants = true
+    }, {
+        Create("UICorner", {CornerRadius = UDim.new(0, 8)}),
+        Create("UIStroke", {Color = Theme["Stroke"], Thickness = 1.2, Transparency = 0.5})
+    })
+
+    MakeDrag(ShadowHolder)
+
+    -- Top Bar
+    local TopBar = Create("Frame", {
+        Parent = MainFrame,
+        Size = UDim2.new(1, 0, 0, 40),
+        BackgroundTransparency = 1,
+        Name = "TopBar"
+    }, {
+        Create("TextLabel", {
+            Name = "Title",
+            Text = Title,
+            FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold), -- Font Gotham Bold Modern
+            TextColor3 = Theme["Text"],
+            TextSize = 16,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Position = UDim2.new(0, 15, 0, 0),
+            Size = UDim2.new(0.5, 0, 1, 0),
+            BackgroundTransparency = 1
+        }),
+        Create("TextLabel", {
+            Name = "SubTitle",
+            Text = SubTitle,
+            FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium),
+            TextColor3 = Theme["SubText"],
+            TextSize = 11,
+            TextXAlignment = Enum.TextXAlignment.Left,
+            Position = UDim2.new(0, 15 + (#Title * 10), 0, 2), -- Offset dynamic theo title
+            Size = UDim2.new(0.5, 0, 1, 0),
+            BackgroundTransparency = 1,
+            TextTransparency = 0.4
+        })
+    })
+
+    -- Divider
+    Create("Frame", {
+        Parent = TopBar,
+        Size = UDim2.new(1, 0, 0, 1),
+        Position = UDim2.new(0, 0, 1, -1),
+        BackgroundColor3 = Theme["Stroke"],
+        BorderSizePixel = 0,
+        BackgroundTransparency = 0.5
+    })
+
+    -- Sidebar (Tabs)
+    local Sidebar = Create("ScrollingFrame", {
+        Name = "Sidebar",
+        Parent = MainFrame,
+        Size = UDim2.new(0, 150, 1, -41),
+        Position = UDim2.new(0, 0, 0, 41),
+        BackgroundTransparency = 1,
+        ScrollBarThickness = 2,
+        ScrollBarImageColor3 = Theme["Accent"],
+        CanvasSize = UDim2.new(0, 0, 0, 0),
+        AutomaticCanvasSize = Enum.AutomaticSize.Y
+    }, {
+        Create("UIPadding", {PaddingTop = UDim.new(0, 10), PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 5)}),
+        Create("UIListLayout", {Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder})
+    })
+
+    -- Separator Vertical
+    Create("Frame", {
+        Parent = MainFrame,
+        Size = UDim2.new(0, 1, 1, -41),
+        Position = UDim2.new(0, 150, 0, 41),
+        BackgroundColor3 = Theme["Stroke"],
+        BorderSizePixel = 0,
+        BackgroundTransparency = 0.5
+    })
+
+    -- Container Holder
+    local ContainerHolder = Create("Frame", {
+        Name = "ContainerHolder",
+        Parent = MainFrame,
+        Size = UDim2.new(1, -151, 1, -41),
+        Position = UDim2.new(0, 151, 0, 41),
+        BackgroundTransparency = 1
+    })
+
+    local Window = {Tabs = {}}
+    local FirstTab = true
+
+    function Window:AddTab(Config)
+        local TabName = Config.Name or Config[1] or "Tab"
+        local TabIcon = Config.Icon or Config[2] or ""
+
+        -- Tab Button
+        local TabBtn = Create("TextButton", {
+            Parent = Sidebar,
+            Size = UDim2.new(1, 0, 0, 32),
+            BackgroundColor3 = Theme["Secondary"],
+            BackgroundTransparency = 1,
+            Text = "",
+            AutoButtonColor = false
+        }, {
+            Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
+            Create("TextLabel", {
+                Text = TabName,
+                TextColor3 = Theme["SubText"],
+                Font = Enum.Font.GothamMedium,
+                TextSize = 13,
+                Size = UDim2.new(1, -35, 1, 0),
+                Position = UDim2.new(0, 30, 0, 0),
+                BackgroundTransparency = 1,
+                TextXAlignment = Enum.TextXAlignment.Left
+            }),
+            Create("ImageLabel", {
+                Image = Bearlib.Icons[TabIcon] or TabIcon,
+                Size = UDim2.new(0, 18, 0, 18),
+                Position = UDim2.new(0, 6, 0.5, -9),
+                BackgroundTransparency = 1,
+                ImageColor3 = Theme["SubText"]
+            })
+        })
+
+        -- Tab Container
+        local Container = Create("ScrollingFrame", {
+            Parent = ContainerHolder,
+            Size = UDim2.new(1, 0, 1, 0),
+            BackgroundTransparency = 1,
+            Visible = false,
+            ScrollBarThickness = 2,
+            ScrollBarImageColor3 = Theme["Accent"],
+            CanvasSize = UDim2.new(0, 0, 0, 0),
+            AutomaticCanvasSize = Enum.AutomaticSize.Y
+        }, {
+            Create("UIPadding", {PaddingTop = UDim.new(0, 10), PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10), PaddingBottom = UDim.new(0, 10)}),
+            Create("UIListLayout", {Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder})
+        })
+
+        -- Tab Logic
+        if FirstTab then
+            Container.Visible = true
+            TabBtn.BackgroundTransparency = 0
+            TabBtn.TextLabel.TextColor3 = Theme["Text"]
+            TabBtn.ImageLabel.ImageColor3 = Theme["Text"]
+            FirstTab = false
+        end
+
+        TabBtn.MouseButton1Click:Connect(function()
+            CreateRipple(TabBtn)
+            for _, v in pairs(ContainerHolder:GetChildren()) do v.Visible = false end
+            for _, v in pairs(Sidebar:GetChildren()) do
+                if v:IsA("TextButton") then
+                    Tween(v, {0.3, Enum.EasingStyle.Quart}, {BackgroundTransparency = 1})
+                    Tween(v.TextLabel, {0.3}, {TextColor3 = Theme["SubText"]})
+                    Tween(v.ImageLabel, {0.3}, {ImageColor3 = Theme["SubText"]})
+                end
+            end
+            
+            Container.Visible = true
+            Tween(TabBtn, {0.3, Enum.EasingStyle.Quart}, {BackgroundTransparency = 0})
+            Tween(TabBtn.TextLabel, {0.3}, {TextColor3 = Theme["Text"]})
+            Tween(TabBtn.ImageLabel, {0.3}, {ImageColor3 = Theme["Text"]})
+        end)
+
+        local TabObj = {}
+
+        -- [[ SECTIONS ]]
+        function TabObj:AddSection(Title)
+            Create("TextLabel", {
+                Parent = Container,
+                Text = Title,
+                TextColor3 = Theme["Accent"],
+                Font = Enum.Font.GothamBold,
+                TextSize = 12,
+                Size = UDim2.new(1, 0, 0, 20),
+                BackgroundTransparency = 1,
+                TextXAlignment = Enum.TextXAlignment.Left
+            })
+        end
+
+        -- [[ BUTTON ]]
+        function TabObj:AddButton(Config)
+            local Name = Config.Name or Config[1]
+            local Callback = Config.Callback or function() end
+
+            local Btn = Create("TextButton", {
+                Parent = Container,
+                Size = UDim2.new(1, 0, 0, 36),
+                BackgroundColor3 = Theme["Secondary"],
+                Text = "",
+                AutoButtonColor = false
+            }, {
+                Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
+                Create("UIStroke", {Color = Theme["Stroke"], Thickness = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border}),
+                Create("TextLabel", {
+                    Text = Name,
+                    TextColor3 = Theme["Text"],
+                    Font = Enum.Font.GothamMedium,
+                    TextSize = 13,
+                    Size = UDim2.new(1, -10, 1, 0),
+                    Position = UDim2.new(0, 10, 0, 0),
+                    BackgroundTransparency = 1,
+                    TextXAlignment = Enum.TextXAlignment.Left
+                }),
+                Create("ImageLabel", {
+                    Image = "rbxassetid://10709791437", -- Mouse Click Icon
+                    Size = UDim2.new(0, 16, 0, 16),
+                    Position = UDim2.new(1, -26, 0.5, -8),
+                    BackgroundTransparency = 1,
+                    ImageColor3 = Theme["SubText"]
+                })
+            })
+
+            Btn.MouseButton1Click:Connect(function()
+                CreateRipple(Btn)
+                Callback()
+                -- Animation nhấn xuống
+                Tween(Btn, {0.1}, {Size = UDim2.new(1, -2, 0, 34)})
+                task.wait(0.1)
+                Tween(Btn, {0.1}, {Size = UDim2.new(1, 0, 0, 36)})
+            end)
+        end
+
+        -- [[ TOGGLE ]]
+        function TabObj:AddToggle(Config)
+            local Name = Config.Name or Config[1]
+            local Default = Config.Default or false
+            local Callback = Config.Callback or function() end
+            local State = Default
+
+            local ToggleFrame = Create("TextButton", {
+                Parent = Container,
+                Size = UDim2.new(1, 0, 0, 36),
+                BackgroundColor3 = Theme["Secondary"],
+                Text = "",
+                AutoButtonColor = false
+            }, {
+                Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
+                Create("UIStroke", {Color = Theme["Stroke"], Thickness = 1}),
+                Create("TextLabel", {
+                    Text = Name,
+                    TextColor3 = Theme["Text"],
+                    Font = Enum.Font.GothamMedium,
+                    TextSize = 13,
+                    Size = UDim2.new(1, -60, 1, 0),
+                    Position = UDim2.new(0, 10, 0, 0),
+                    BackgroundTransparency = 1,
+                    TextXAlignment = Enum.TextXAlignment.Left
+                })
+            })
+
+            local Switch = Create("Frame", {
+                Parent = ToggleFrame,
+                Size = UDim2.new(0, 40, 0, 20),
+                Position = UDim2.new(1, -50, 0.5, -10),
+                BackgroundColor3 = State and Theme["Accent"] or Color3.fromRGB(50,50,50),
+            }, {
+                Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+            })
+
+            local Circle = Create("Frame", {
+                Parent = Switch,
+                Size = UDim2.new(0, 16, 0, 16),
+                Position = State and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8),
+                BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+            }, {
+                Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+            })
+
+            ToggleFrame.MouseButton1Click:Connect(function()
+                State = not State
+                CreateRipple(ToggleFrame)
+                
+                Tween(Switch, {0.3, Enum.EasingStyle.Quart}, {BackgroundColor3 = State and Theme["Accent"] or Color3.fromRGB(50,50,50)})
+                Tween(Circle, {0.3, Enum.EasingStyle.Quart}, {Position = State and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8)})
+                
+                Callback(State)
+            end)
+        end
+
+        -- [[ SLIDER ]]
+        function TabObj:AddSlider(Config)
+            local Name = Config.Name or Config[1]
+            local Min, Max = Config.Min or 0, Config.Max or 100
+            local Default = Config.Default or Min
+            local Callback = Config.Callback or function() end
+
+            local SliderFrame = Create("Frame", {
+                Parent = Container,
+                Size = UDim2.new(1, 0, 0, 45),
+                BackgroundColor3 = Theme["Secondary"],
+            }, {
+                Create("UICorner", {CornerRadius = UDim.new(0, 6)}),
+                Create("UIStroke", {Color = Theme["Stroke"], Thickness = 1}),
+                Create("TextLabel", {
+                    Text = Name,
+                    TextColor3 = Theme["Text"],
+                    Font = Enum.Font.GothamMedium,
+                    TextSize = 13,
+                    Position = UDim2.new(0, 10, 0, 5),
+                    Size = UDim2.new(1, -20, 0, 15),
+                    BackgroundTransparency = 1,
+                    TextXAlignment = Enum.TextXAlignment.Left
+                })
+            })
+
+            local ValueLabel = Create("TextLabel", {
+                Parent = SliderFrame,
+                Text = tostring(Default),
+                TextColor3 = Theme["SubText"],
+                Font = Enum.Font.GothamBold,
+                TextSize = 13,
+                Position = UDim2.new(1, -10, 0, 5),
+                Size = UDim2.new(0, 50, 0, 15),
+                AnchorPoint = Vector2.new(1, 0),
+                BackgroundTransparency = 1,
+                TextXAlignment = Enum.TextXAlignment.Right
+            })
+
+            local Bar = Create("Frame", {
+                Parent = SliderFrame,
+                Size = UDim2.new(1, -20, 0, 4),
+                Position = UDim2.new(0, 10, 0, 30),
+                BackgroundColor3 = Color3.fromRGB(50, 50, 50),
+            }, {
+                Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+            })
+
+            local Fill = Create("Frame", {
+                Parent = Bar,
+                Size = UDim2.new((Default - Min) / (Max - Min), 0, 1, 0),
+                BackgroundColor3 = Theme["Accent"],
+            }, {
+                Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+            })
+
+            local Circle = Create("Frame", {
+                Parent = Fill,
+                Size = UDim2.new(0, 12, 0, 12),
+                Position = UDim2.new(1, -6, 0.5, -6),
+                BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            }, {
+                Create("UICorner", {CornerRadius = UDim.new(1, 0)})
+            })
+
+            local Dragging = false
+
+            local function Update(Input)
+                local SizeX = math.clamp((Input.Position.X - Bar.AbsolutePosition.X) / Bar.AbsoluteSize.X, 0, 1)
+                local Value = math.floor(Min + ((Max - Min) * SizeX))
+                
+                Tween(Fill, {0.1}, {Size = UDim2.new(SizeX, 0, 1, 0)})
+                ValueLabel.Text = tostring(Value)
+                Callback(Value)
+            end
+
+            SliderFrame.InputBegan:Connect(function(Input)
+                if Input.UserInputType == Enum.UserInputType.MouseButton1 o
