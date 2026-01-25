@@ -1,6 +1,6 @@
 --[[ 
     BEAR LIBRARY - REMASTERED PREMIUM VERSION
-    [span_0](start_span)Based on source: Huyzhud.txt[span_0](end_span)
+    Based on source: Huyzhud.txt
     Upgraded by: Gemini AI
 ]]
 
@@ -30,7 +30,7 @@ local Bearlib = {
         }
     },
     Info = { Version = "2.0.0 Premium" },
-    [span_1](start_span)Save = { UISize = {550, 350}, TabSize = 160, Theme = "Default" }, -- Tăng kích thước mặc định cho thoáng[span_1](end_span)
+    Save = { UISize = {550, 350}, TabSize = 160, Theme = "Default" }, -- Tăng kích thước mặc định cho thoáng
     Settings = {},
     Tabs = {},
     Icons = {
@@ -58,8 +58,7 @@ local function Create(Name, Properties, Children)
 end
 
 local function Tween(Object, Info, Properties, Wait)
-    local Anim =
-TweenService:Create(Object, TweenInfo.new(unpack(Info)), Properties)
+    local Anim = TweenService:Create(Object, TweenInfo.new(unpack(Info)), Properties)
     Anim:Play()
     if Wait then Anim.Completed:Wait() end
     return Anim
@@ -153,8 +152,7 @@ function Bearlib:MakeWindow(Configs)
         Parent = ScreenGui,
         BackgroundTransparency = 1,
         Image = Theme["Shadow"], -- Shadow Asset
-        ImageColor3 =
-Color3.new(0,0,0),
+        ImageColor3 = Color3.new(0,0,0),
         ImageTransparency = 0.4,
         Position = UDim2.new(0.5, -Bearlib.Save.UISize[1]/2, 0.5, -Bearlib.Save.UISize[2]/2),
         Size = UDim2.fromOffset(Bearlib.Save.UISize[1] + 30, Bearlib.Save.UISize[2] + 30),
@@ -290,8 +288,7 @@ Color3.new(0,0,0),
         })
 
         -- Tab Container
-        local Container =
-Create("ScrollingFrame", {
+        local Container = Create("ScrollingFrame", {
             Parent = ContainerHolder,
             Size = UDim2.new(1, 0, 1, 0),
             BackgroundTransparency = 1,
@@ -544,8 +541,7 @@ Create("ScrollingFrame", {
         end
         
         -- [[ TEXTBOX ]]
-        function
-TabObj:AddTextBox(Config)
+        function TabObj:AddTextBox(Config)
             local Name = Config.Name or "Input"
             local Placeholder = Config.Placeholder or "Type here..."
             local Callback = Config.Callback or function() end
