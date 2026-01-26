@@ -240,9 +240,9 @@ local GetFlag, SetFlag, CheckFlag do
 	
 	local db
 	Connection.FlagsChanged:Connect(function(Flag, Value)
-		-- Đã tắt chức năng lưu cấu hình
-	end)
-	
+        -- Đã tắt chức năng lưu cấu hình
+    end)
+end -- <--- BẠN CẦN THÊM CHỮ "end" NÀY VÀO
 
 local ScreenGui = Create("ScreenGui", CoreGui, {
 	Name = "bear Library V5",
