@@ -8,7 +8,7 @@ local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local PlayerMouse = Player:GetMouse()
 
-local bearlib = {
+local bear1lib = {
     Themes = {
         QuangHuy = {
             -- Thay đổi dải màu nền (Gradient) sang màu đen/xám tối
@@ -21,7 +21,7 @@ local bearlib = {
             ["Color Hub 2"] = Color3.fromRGB(15, 15, 15), 
             
             -- Màu viền (Stroke) - để màu trắng hoặc xám sáng để nổi bật trên nền đen
-            ["Color Stroke"] = Color3.fromRGB(0, 0, 0), 
+            ["Color Stroke"] = Color3.fromRGB(255,255,255), 
             
             -- Màu chủ đề (Nút bấm, thanh trượt...) - chuyển sang Trắng hoặc Xám
             ["Color Theme"] = Color3.fromRGB(0,0, 255), 
@@ -58,12 +58,12 @@ local bearlib = {
 local ViewportSize = workspace.CurrentCamera.ViewportSize
 local UIScale = ViewportSize.Y / 450
 
-local Settings = bearlib.Settings
-local Flags = bearlib.Flags
+local Settings = bear1lib.Settings
+local Flags = bear1lib.Flags
 
 local SetProps, SetChildren, InsertTheme, Create do
 	InsertTheme = function(Instance, Type)
-		table.insert(bearlib.Instances, {
+		table.insert(bear1lib.Instances, {
 			Instance = Instance,
 			Type = Type
 		})
@@ -112,14 +112,14 @@ local SetProps, SetChildren, InsertTheme, Create do
 			local decode = HttpService:JSONDecode(readfile(file))
 			
 			if type(decode) == "table" then
-				if rawget(decode, "UISize") then bearlib.Save["UISize"] = decode["UISize"] end
-				if rawget(decode, "TabSize") then bearlib.Save["TabSize"] = decode["TabSize"] end
-				if rawget(decode, "Theme") and VerifyTheme(decode["Theme"]) then bearlib.Save["Theme"] = decode["Theme"] end
+				if rawget(decode, "UISize") then bear1lib.Save["UISize"] = decode["UISize"] end
+				if rawget(decode, "TabSize") then bear1lib.Save["TabSize"] = decode["TabSize"] end
+				if rawget(decode, "Theme") and VerifyTheme(decode["Theme"]) then bear1lib.Save["Theme"] = decode["Theme"] end
 			end
 		end
 	end
 	
-	-- pcall(Save, "bear library V5.json")
+	-- pcall(Save, "bear1 library V5.json")
 	end
 
 local Funcs = {} do
@@ -179,7 +179,7 @@ local Funcs = {} do
 	end
 end
 
-local Connections, Connection = {}, bearlib.Connection do
+local Connections, Connection = {}, bear1lib.Connection do
 	local function NewConnectionList(List)
 		if type(List) ~= "table" then return end
 		
@@ -245,7 +245,7 @@ local GetFlag, SetFlag, CheckFlag do
 end -- <--- BẠN CẦN THÊM CHỮ "end" NÀY VÀO
 
 local ScreenGui = Create("ScreenGui", CoreGui, {
-	Name = "bear Library V5",
+	Name = "bear1 Library V5",
 }, {
 	Create("UIScale", {
 		Scale = UIScale,
@@ -329,7 +329,7 @@ local function MakeDrag(Instance)
 end
 
 local function VerifyTheme(Theme)
-	for name,_ in pairs(bearlib.Themes) do
+	for name,_ in pairs(bear1lib.Themes) do
 		if name == Theme then
 			return true
 		end
@@ -340,14 +340,14 @@ local function SaveJson(FileName, save)
 	return -- Không làm gì cả
 end
 
-local Theme = bearlib.Themes[bearlib.Save.Theme]
+local Theme = bear1lib.Themes[bear1lib.Save.Theme]
 
 local function AddEle(Name, Func)
-	bearlib.Elements[Name] = Func
+	bear1lib.Elements[Name] = Func
 end
 
 local function Make(Ele, Instance, props, ...)
-	local Element = bearlib.Elements[Ele](Instance, props, ...)
+	local Element = bear1lib.Elements[Ele](Instance, props, ...)
 	return Element
 end
 
@@ -494,7 +494,7 @@ local function GetColor(Instance)
 end
 
 -- /////////// --
-function bearlib:GetIcon(index)
+function bear1lib:GetIcon(index)
 	if type(index) ~= "string" or index:find("rbxassetid://") or #index == 0 then
 		return index
 	end
@@ -517,15 +517,15 @@ function bearlib:GetIcon(index)
 	return firstMatch or index
 end
 
-function bearlib:SetTheme(NewTheme)
+function bear1lib:SetTheme(NewTheme)
 	if not VerifyTheme(NewTheme) then return end
 	
-	bearlib.Save.Theme = NewTheme
-	SaveJson("bear library V5.json", bearlib.Save)
-	Theme = bearlib.Themes[NewTheme]
+	bear1lib.Save.Theme = NewTheme
+	SaveJson("bear1 library V5.json", bear1lib.Save)
+	Theme = bear1lib.Themes[NewTheme]
 	
 	Comnection:FireConnection("ThemeChanged", NewTheme)
-	table.foreach(bearlib.Instances, function(_,Val)
+	table.foreach(bear1lib.Instances, function(_,Val)
 		if Val.Type == "Gradient" then
 			Val.Instance.Color = Theme["Color Hub 1"]
 		elseif Val.Type == "Frame" then
@@ -544,13 +544,13 @@ function bearlib:SetTheme(NewTheme)
 	end)
 end
 
-function bearlib:SetScale(NewScale)
+function bear1lib:SetScale(NewScale)
 	NewScale = ViewportSize.Y / math.clamp(NewScale, 300, 2000)
 	UIScale, ScreenGui.Scale.Scale = NewScale, NewScale
 end
 
-function bearlib:MakeWindow(Configs)
-	local WTitle = Configs[1] or Configs.Name or Configs.Title or "bear Library V5"
+function bear1lib:MakeWindow(Configs)
+	local WTitle = Configs[1] or Configs.Name or Configs.Title or "bear1 Library V5"
 	local WMiniText = Configs[2] or Configs.SubTitle or "by : Quang Huy"
 	
 	Settings.ScriptFile = Configs[3] or Configs.SaveFolder or false
@@ -559,7 +559,7 @@ function bearlib:MakeWindow(Configs)
 		-- Đã tắt chức năng load config cũ
 	end; --LoadFile()
 	
-	local UISizeX, UISizeY = unpack(bearlib.Save.UISize)
+	local UISizeX, UISizeY = unpack(bear1lib.Save.UISize)
 	local MainFrame = InsertTheme(Create("ImageButton", ScreenGui, {
 		Size = UDim2.fromOffset(UISizeX, UISizeY),
 		Position = UDim2.new(0.5, -UISizeX/2, 0.5, -UISizeY/2),
@@ -615,7 +615,7 @@ function bearlib:MakeWindow(Configs)
 	}), "Text")
 	
 	local MainScroll = InsertTheme(Create("ScrollingFrame", Components, {
-		Size = UDim2.new(0, bearlib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
+		Size = UDim2.new(0, bear1lib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
 		ScrollBarImageColor3 = Theme["Color Theme"],
 		Position = UDim2.new(0, 0, 1, 0),
 		AnchorPoint = Vector2.new(0, 1),
@@ -678,14 +678,14 @@ function bearlib:MakeWindow(Configs)
 	
 	ConnectSave(ControlSize1, function()
 		if not Minimized then
-			bearlib.Save.UISize = {MainFrame.Size.X.Offset, MainFrame.Size.Y.Offset}
-			SaveJson("bear library V5.json", bearlib.Save)
+			bear1lib.Save.UISize = {MainFrame.Size.X.Offset, MainFrame.Size.Y.Offset}
+			SaveJson("bear1 library V5.json", bear1lib.Save)
 		end
 	end)
 	
 	ConnectSave(ControlSize2, function()
-		bearlib.Save.TabSize = MainScroll.Size.X.Offset
-		SaveJson("bear library V5.json", bearlib.Save)
+		bear1lib.Save.TabSize = MainScroll.Size.X.Offset
+		SaveJson("bear1 library V5.json", bear1lib.Save)
 	end)
 	
 	local ButtonsFolder = Create("Folder", TopBar, {
@@ -732,13 +732,13 @@ function bearlib:MakeWindow(Configs)
 		WaitClick = true
 		
 		if Minimized then
-			MinimizeButton.Image = "rbxassetid://110657725541747"
+			MinimizeButton.Image = "rbxassetid://134852113716171"
 			CreateTween({MainFrame, "Size", SaveSize, 0.25, true})
 			ControlSize1.Visible = true
 			ControlSize2.Visible = true
 			Minimized = false
 		else
-			MinimizeButton.Image = "rbxassetid://110657725541747"
+			MinimizeButton.Image = "rbxassetid://134852113716171"
 			SaveSize = MainFrame.Size
 			ControlSize1.Visible = false
 			ControlSize2.Visible = false
@@ -893,9 +893,9 @@ function bearlib:MakeWindow(Configs)
 	end
 	function Window:SelectTab(TabSelect)
 		if type(TabSelect) == "number" then
-			bearlib.Tabs[TabSelect].func:Enable()
+			bear1lib.Tabs[TabSelect].func:Enable()
 		else
-			for _,Tab in pairs(bearlib.Tabs) do
+			for _,Tab in pairs(bear1lib.Tabs) do
 				if Tab.Cont == TabSelect.Cont then
 					Tab.func:Enable()
 				end
@@ -909,7 +909,7 @@ function bearlib:MakeWindow(Configs)
 		local TName = Configs[1] or Configs.Title or "Tab!"
 		local TIcon = Configs[2] or Configs.Icon or ""
 		
-		TIcon = bearlib:GetIcon(TIcon)
+		TIcon = bear1lib:GetIcon(TIcon)
 		if not TIcon:find("rbxassetid://") or TIcon:gsub("rbxassetid://", ""):len() < 6 then
 			TIcon = false
 		end
@@ -985,7 +985,7 @@ function bearlib:MakeWindow(Configs)
 			end
 			Container.Parent = Containers
 			Container.Size = UDim2.new(1, 0, 1, 150)
-			table.foreach(bearlib.Tabs, function(_,Tab)
+			table.foreach(bear1lib.Tabs, function(_,Tab)
 				if Tab.Cont ~= Container then
 					Tab.func:Disable()
 				end
@@ -1000,7 +1000,7 @@ function bearlib:MakeWindow(Configs)
 		
 		FirstTab = true
 		local Tab = {}
-		table.insert(bearlib.Tabs, {TabInfo = {Name = TName, Icon = TIcon}, func = Tab, Cont = Container})
+		table.insert(bear1lib.Tabs, {TabInfo = {Name = TName, Icon = TIcon}, func = Tab, Cont = Container})
 		Tab.Cont = Container
 		
 		function Tab:Disable()
@@ -1041,7 +1041,7 @@ function bearlib:MakeWindow(Configs)
 			}), "Text")
 			
 			local Section = {}
-			table.insert(bearlib.Options, {type = "Section", Name = SectionName, func = Section})
+			table.insert(bear1lib.Options, {type = "Section", Name = SectionName, func = Section})
 			function Section:Visible(Bool)
 				if Bool == nil then SectionFrame.Visible = not SectionFrame.Visible return end
 				SectionFrame.Visible = Bool
@@ -1838,4 +1838,4 @@ function bearlib:MakeWindow(Configs)
 	return Window
 end
 
-return bearlib
+return bear1lib
