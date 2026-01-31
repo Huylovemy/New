@@ -550,25 +550,28 @@ function bear1lib:SetScale(NewScale)
 end
 
 function bear1lib:MakeWindow(Configs)
-	local WTitle = Configs[1] or Configs.Name or Configs.Title or "bear1 Library V5"
-	local WMiniText = Configs[2] or Configs.SubTitle or "by : Quang Huy"
-	
-	Settings.ScriptFile = Configs[3] or Configs.SaveFolder or false
-	
-	local function LoadFile()
-		-- Đã tắt chức năng load config cũ
-	end; --LoadFile()
-	
+	-- ... (Code phía trên giữ nguyên)
+
 	local UISizeX, UISizeY = unpack(bear1lib.Save.UISize)
 	local MainFrame = InsertTheme(Create("ImageButton", ScreenGui, {
 		Size = UDim2.fromOffset(UISizeX, UISizeY),
 		Position = UDim2.new(0.5, -UISizeX/2, 0.5, -UISizeY/2),
-		BackgroundTransparency = 0.03,
+		
+        -- [THAY ĐỔI 1] Đổi từ 0.03 thành 1 để nền chính trở nên vô hình (chỉ hiện ảnh hoặc nút)
+		BackgroundTransparency = 1, 
+        
 		Name = "Hub"
 	}), "Main")
-	Make("Gradient", MainFrame, {
-		Rotation = 45
-	})MakeDrag(MainFrame)
+	
+    -- [THAY ĐỔI 2] Thêm dấu gạch ngang (--) vào 3 dòng dưới để tắt màu Gradient đen
+	-- Make("Gradient", MainFrame, {
+	-- 	Rotation = 45
+	-- })
+    
+    MakeDrag(MainFrame)
+	
+    -- ... (Phần code xử lý ảnh nền bên dưới giữ nguyên)
+    
 	
     
     -- [BẮT ĐẦU ĐOẠN CODE ĐÃ SỬA]
