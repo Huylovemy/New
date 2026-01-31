@@ -553,6 +553,10 @@ function bear1lib:MakeWindow(Configs)
 	-- ... (Code phía trên giữ nguyên)
 
 	local UISizeX, UISizeY = unpack(bear1lib.Save.UISize)
+	-- THÊM DÒNG NÀY ĐỂ SỬA TÊN WINDOW KHÔNG BỊ "LABEL"
+local WTitle = Configs.Name or Configs.Title or "Bear Library" 
+local WMiniText = Configs.SubTitle or Configs.MiniText or "UI"
+
 	local MainFrame = InsertTheme(Create("ImageButton", ScreenGui, {
 		Size = UDim2.fromOffset(UISizeX, UISizeY),
 		Position = UDim2.new(0.5, -UISizeX/2, 0.5, -UISizeY/2),
@@ -600,7 +604,7 @@ function bear1lib:MakeWindow(Configs)
             ScaleType = Enum.ScaleType.Crop, 
             
             -- [SỬA LỖI 2] Tăng ZIndex lên để không bị các layer khác che mất
-            ZIndex = 1
+            ZIndex = 0
         })
         
         Make("Corner", BackgroundIcon)
@@ -1057,7 +1061,7 @@ function bear1lib:MakeWindow(Configs)
 		function Tab:Destroy() TabSelect:Destroy() Container:Destroy() end
 		
 		function Tab:AddSection(Configs)
-			local SectionName = type(Configs) == "string" and Configs or Configs[1] or Configs.Name or Configs.Title or Configs.Section
+			local SectionName = type(Configs) == "string" and Configs or Configs[1] or Configs.Name or Configs.Title or Configs.Section or "Section"
 			
 			local SectionFrame = Create("Frame", Container, {
 				Size = UDim2.new(1, 0, 0, 20),
