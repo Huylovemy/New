@@ -240,9 +240,8 @@ local GetFlag, SetFlag, CheckFlag do
 	
 	local db
 	Connection.FlagsChanged:Connect(function(Flag, Value)
-        -- Đã tắt chức năng lưu cấu hình
     end)
-end -- <--- BẠN CẦN THÊM CHỮ "end" NÀY VÀO
+end
 
 local ScreenGui = Create("ScreenGui", CoreGui, {
 	Name = "bear1 Library V5",
@@ -552,44 +551,49 @@ end
 	local UISizeX, UISizeY = unpack(bear1lib.Save.UISize)
 	
     -- [SỬA 1] Tạo khung chính trong suốt (BackgroundTransparency = 1)
-	local MainFrame = InsertTheme(Create("ImageButton", ScreenGui, {
+		local MainFrame = InsertTheme(Create("ImageButton", ScreenGui, {
 		Size = UDim2.fromOffset(UISizeX, UISizeY),
 		Position = UDim2.new(0.5, -UISizeX/2, 0.5, -UISizeY/2),
-		BackgroundTransparency = 1, -- ĐÃ SỬA: Chuyển từ 0.03 thành 1 để xóa nền đen
+		
+		-- [SỬA 1] Đổi thành 1 để khung trong suốt (xóa nền đen)
+		BackgroundTransparency = 1, 
+		
 		Name = "Hub"
 	}), "Main")
 
-    -- [SỬA 2] Vô hiệu hóa Gradient màu đen (Thêm dấu -- ở đầu dòng)
+	-- [SỬA 2] Thêm dấu -- để tắt Gradient (không cho phủ màu đen lên ảnh)
 	-- Make("Gradient", MainFrame, {
 	-- 	Rotation = 45
-	-- }) 
-    
-    MakeDrag(MainFrame)
+	-- })
+	
+	MakeDrag(MainFrame)
 
-    -- [SỬA 3] Code chèn ảnh nền phủ kín
+    -- Phần xử lý ảnh nền UI -----------------------
+      local Configs = { Image = "", Logo = "" } -- [FIX] Thêm dòng này để tránh lỗi
     local BgImageId = Configs.Image or Configs.Logo or "" 
     
-    if #BgImageId > 0 then
+    if #BgImageId > 0 then 
         if not string.find(BgImageId, "rbxassetid://") then
             BgImageId = "rbxassetid://" .. BgImageId
         end
 
         local BackgroundIcon = Create("ImageLabel", MainFrame, {
             Name = "BackgroundWatermark",
-            Size = UDim2.fromScale(1, 1), -- Phủ kín 100% khung
+            Size = UDim2.fromScale(1, 1), 
             Position = UDim2.fromScale(0, 0),
             BackgroundTransparency = 1,
             Image = BgImageId,
             
-            -- QUAN TRỌNG: Chỉnh về 0 để ảnh rõ nét (vì nền đen đã mất)
-            -- Nếu muốn ảnh hơi mờ để nhìn xuyên thấu game thì chỉnh lên 0.2 hoặc 0.3
+            -- [SỬA 3] Đổi thành 0 để ảnh hiện rõ nét (làm nền chính)
             ImageTransparency = 0, 
             
-            ScaleType = Enum.ScaleType.Stretch, -- Kéo dãn ảnh lấp đầy khung
+            ScaleType = Enum.ScaleType.Stretch,
             ZIndex = 0 
         })
-        Make("Corner", BackgroundIcon) -- Bo góc ảnh theo khung
+        Make("Corner", BackgroundIcon)
     end
+    -- Kết thúc phần ảnh nền -----------------------
+    
     
 	local function ControlSize()
 		local Pos1, Pos2 = ControlSize1.Position, ControlSize2.Position
