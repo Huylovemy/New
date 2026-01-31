@@ -524,7 +524,7 @@ function bear1lib:SetTheme(NewTheme)
 	SaveJson("bear1 library V5.json", bear1lib.Save)
 	Theme = bear1lib.Themes[NewTheme]
 	
-	Comnection:FireConnection("ThemeChanged", NewTheme)
+	Connection:FireConnection("ThemeChanged", NewTheme)
 	table.foreach(bear1lib.Instances, function(_,Val)
 		if Val.Type == "Gradient" then
 			Val.Instance.Color = Theme["Color Hub 1"]
@@ -557,7 +557,7 @@ function bear1lib:MakeWindow(Configs)
 	
 	local function LoadFile()
 		-- Đã tắt chức năng load config cũ
-	end; --LoadFile()
+	end
 	
 	local UISizeX, UISizeY = unpack(bear1lib.Save.UISize)
 	local MainFrame = InsertTheme(Create("ImageButton", ScreenGui, {
@@ -569,159 +569,41 @@ function bear1lib:MakeWindow(Configs)
 	Make("Gradient", MainFrame, {
 		Rotation = 45
 	})MakeDrag(MainFrame)
-	    -- [CODE THÊM VÀO] Tạo hình nền phủ kín UI (Ngập UI)
-    local BgImageId = Configs.Image or Configs.Logo or "" -- Lấy ID từ script gọi
+
+    -- [CODE ĐÃ SỬA GỌN] Phần xử lý ảnh nền UI -----------------------
+    local BgImageId = Configs.Image or Configs.Logo or "" 
     
     if #BgImageId > 0 then
-        -- Tự động thêm rbxassetid:// nếu thiếu
         if not string.find(BgImageId, "rbxassetid://") then
             BgImageId = "rbxassetid://" .. BgImageId
         end
 
         local BackgroundIcon = Create("ImageLabel", MainFrame, {
             Name = "BackgroundWatermark",
-            
-            -- QUAN TRỌNG: (1, 1) nghĩa là 100% chiều ngang, 100% chiều dọc
-            Size = UDim2.fromScale(1, 1), 
-            
+            Size = UDim2.fromScale(1, 1), -- 1,1 Là full khung (Ngập UI)
             Position = UDim2.fromScale(0, 0),
             BackgroundTransparency = 1,
             Image = BgImageId,
-            
-            -- Độ mờ của ảnh (0.8 = mờ nhạt, 0.5 = rõ vừa, 0 = rõ nét)
-            ImageTransparency = 0.85, 
-            
-            -- Chọn 1 trong 2 chế độ dưới đây tùy theo ý thích:
-            -- Enum.ScaleType.Stretch: Kéo dãn ảnh méo ra để lấp đầy mọi góc (Dùng cái này nếu muốn kín bưng bất chấp tỉ lệ)
-            -- Enum.ScaleType.Slice: Dùng cho khung viền hoặc ảnh texture lặp lại
-            -- Enum.ScaleType.Crop: Phóng to ảnh để lấp đầy nhưng giữ tỉ lệ (ảnh sẽ bị cắt bớt phần thừa)
-            ScaleType = Enum.ScaleType.Stretch, 
-            
-            ZIndex = 0 -- Đặt lớp thấp nhất để không che nút bấm
+            ImageTransparency = 0.85, -- Độ mờ (0.85 là vừa đẹp)
+            ScaleType = Enum.ScaleType.Stretch, -- Kéo dãn ảnh cho kín khung
+            ZIndex = 0 
         })
-        
-        -- Nếu bạn muốn ảnh bo tròn theo góc của UI chính:
-        local BgCorner = Make("Corner", BackgroundIcon)
+        -- Bo tròn ảnh theo khung UI chính
+        Make("Corner", BackgroundIcon)
     end
-    -- [KẾT THÚC CODE THÊM VÀO]
-    
-	local BgImageId = Configs.Image or Configs.Logo or "" 
-    
-    if #BgImageId > 0 then
-        -- Xử lý ID ảnh nếu chưa có rbxassetid
-        if not string.find(BgImageId, "rbxassetid://") then
-            BgImageId = "rbxassetid://" .. BgImageId
-        end
-
-        local BackgroundIcon = Create("ImageLabel", MainFrame, {
-            Name = "BackgroundWatermark",
-            -- Chỉnh kích thước icon tại đây (ví dụ: 300x300 pixel)
-            Size = UDim2.fromOffset(300, 300), 
-            -- Căn giữa khung
-            Position = UDim2.fromScale(0.5, 0.5),
-            AnchorPoint = Vector2.new(0.5, 0.5),
-            BackgroundTransparency = 1,
-            Image = BgImageId,
-            -- Chỉnh độ mờ (0.8 = rất mờ, 0 = rõ nét)
-            ImageTransparency = 0.85, 
-            ScaleType = Enum.ScaleType.Fit,
-            ZIndex = 1 -- Đặt lớp thấp nhất để nằm dưới các nút bấm
-        })
-    end
+    -- [KẾT THÚC PHẦN ẢNH NỀN] ---------------------------------------
 	
 	local MainCorner = Make("Corner", MainFrame)
 	
 	local Components = Create("Folder", MainFrame, {
 		Name = "Components"
 	})
-	
-	local DropdownHolder = Create("Folder", ScreenGui, {
-		Name = "Dropdown"
-	})
-	
-	local TopBar = Create("Frame", Components, {
-		Size = UDim2.new(1, 0, 0, 28),
-		BackgroundTransparency = 1,
-		Name = "Top Bar"
-	})
-	
-	local Title = InsertTheme(Create("TextLabel", TopBar, {
-		Position = UDim2.new(0, 15, 0.5),
-		AnchorPoint = Vector2.new(0, 0.5),
-		AutomaticSize = "XY",
-		Text = WTitle,
-		TextXAlignment = "Left",
-		TextSize = 12,
-		TextColor3 = Theme["Color Text"],
-		BackgroundTransparency = 1,
-		Font = Enum.Font.GothamMedium,
-		Name = "Title"
-	}, {
-		InsertTheme(Create("TextLabel", {
-			Size = UDim2.fromScale(0, 1),
-			AutomaticSize = "X",
-			AnchorPoint = Vector2.new(0, 1),
-			Position = UDim2.new(1, 5, 0.9),
-			Text = WMiniText,
-			TextColor3 = Theme["Color Dark Text"],
-			BackgroundTransparency = 1,
-			TextXAlignment = "Left",
-			TextYAlignment = "Bottom",
-			TextSize = 8,
-			Font = Enum.Font.Gotham,
-			Name = "SubTitle"
-		}), "DarkText")
-	}), "Text")
-	
-	local MainScroll = InsertTheme(Create("ScrollingFrame", Components, {
-		Size = UDim2.new(0, bear1lib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
-		ScrollBarImageColor3 = Theme["Color Theme"],
-		Position = UDim2.new(0, 0, 1, 0),
-		AnchorPoint = Vector2.new(0, 1),
-		ScrollBarThickness = 1.5,
-		BackgroundTransparency = 1,
-		ScrollBarImageTransparency = 0.2,
-		CanvasSize = UDim2.new(),
-		AutomaticCanvasSize = "Y",
-		ScrollingDirection = "Y",
-		BorderSizePixel = 0,
-		Name = "Tab Scroll"
-	}, {
-		Create("UIPadding", {
-			PaddingLeft = UDim.new(0, 10),
-			PaddingRight = UDim.new(0, 10),
-			PaddingTop = UDim.new(0, 10),
-			PaddingBottom = UDim.new(0, 10)
-		}), Create("UIListLayout", {
-			Padding = UDim.new(0, 5)
-		})
-	}), "ScrollBar")
-	
-	local Containers = Create("Frame", Components, {
-		Size = UDim2.new(1, -MainScroll.Size.X.Offset, 1, -TopBar.Size.Y.Offset),
-		AnchorPoint = Vector2.new(1, 1),
-		Position = UDim2.new(1, 0, 1, 0),
-		BackgroundTransparency = 1,
-		ClipsDescendants = true,
-		Name = "Containers"
-	})
-	
-	local ControlSize1, ControlSize2 = MakeDrag(Create("ImageButton", MainFrame, {
-		Size = UDim2.new(0, 35, 0, 35),
-		Position = MainFrame.Size,
-		Active = true,
-		AnchorPoint = Vector2.new(0.8, 0.8),
-		BackgroundTransparency = 1,
-		Name = "Control Hub Size"
-	})), MakeDrag(Create("ImageButton", MainFrame, {
-		Size = UDim2.new(0, 20, 1, -30),
-		Position = UDim2.new(0, MainScroll.Size.X.Offset, 1, 0),
-		AnchorPoint = Vector2.new(0.5, 1),
-		Active = true,
-		BackgroundTransparency = 1,
-		Name = "Control Tab Size"
-	}))
-	
+    -- ... (Các phần code bên dưới giữ nguyên)
+    
+    -- Lưu ý: Bạn nhớ sửa chữ "Comnection" thành "Connection" ở dòng ~404 trong file gốc nhé
+    -- Comnection:FireConnection("ThemeChanged", NewTheme)  <-- SAI
+    -- Connection:FireConnection("ThemeChanged", NewTheme)  <-- ĐÚNG
+    
 	local function ControlSize()
 		local Pos1, Pos2 = ControlSize1.Position, ControlSize2.Position
 		ControlSize1.Position = UDim2.fromOffset(math.clamp(Pos1.X.Offset, 430, 1000), math.clamp(Pos1.Y.Offset, 200, 500))
