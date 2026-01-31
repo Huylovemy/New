@@ -569,7 +569,8 @@ function bear1lib:MakeWindow(Configs)
 	Make("Gradient", MainFrame, {
 		Rotation = 45
 	})MakeDrag(MainFrame)
-	local BgImageId = Configs.Image or Configs.Logo or "" -- Lấy ID từ script gọi
+	    -- [CODE THÊM VÀO] Tạo hình nền phủ kín UI (Ngập UI)
+    local BgImageId = Configs.Image or Configs.Logo or "" -- Lấy ID từ script gọi
     
     if #BgImageId > 0 then
         -- Tự động thêm rbxassetid:// nếu thiếu
@@ -601,6 +602,9 @@ function bear1lib:MakeWindow(Configs)
         
         -- Nếu bạn muốn ảnh bo tròn theo góc của UI chính:
         local BgCorner = Make("Corner", BackgroundIcon)
+    end
+    -- [KẾT THÚC CODE THÊM VÀO]
+    
 	local BgImageId = Configs.Image or Configs.Logo or "" 
     
     if #BgImageId > 0 then
