@@ -569,7 +569,41 @@ function bear1lib:MakeWindow(Configs)
 	Make("Gradient", MainFrame, {
 		Rotation = 45
 	})MakeDrag(MainFrame)
-	
+	    -- [CODE THÊM VÀO] Tạo hình nền phủ kín UI (Ngập UI)
+    local BgImageId = Configs.Image or Configs.Logo or "" -- Lấy ID từ script gọi
+    
+    if #BgImageId > 0 then
+        -- Tự động thêm rbxassetid:// nếu thiếu
+        if not string.find(BgImageId, "rbxassetid://") then
+            BgImageId = "rbxassetid://" .. BgImageId
+        end
+
+        local BackgroundIcon = Create("ImageLabel", MainFrame, {
+            Name = "BackgroundWatermark",
+            
+            -- QUAN TRỌNG: (1, 1) nghĩa là 100% chiều ngang, 100% chiều dọc
+            Size = UDim2.fromScale(1, 1), 
+            
+            Position = UDim2.fromScale(0, 0),
+            BackgroundTransparency = 1,
+            Image = BgImageId,
+            
+            -- Độ mờ của ảnh (0.8 = mờ nhạt, 0.5 = rõ vừa, 0 = rõ nét)
+            ImageTransparency = 0.85, 
+            
+            -- Chọn 1 trong 2 chế độ dưới đây tùy theo ý thích:
+            -- Enum.ScaleType.Stretch: Kéo dãn ảnh méo ra để lấp đầy mọi góc (Dùng cái này nếu muốn kín bưng bất chấp tỉ lệ)
+            -- Enum.ScaleType.Slice: Dùng cho khung viền hoặc ảnh texture lặp lại
+            -- Enum.ScaleType.Crop: Phóng to ảnh để lấp đầy nhưng giữ tỉ lệ (ảnh sẽ bị cắt bớt phần thừa)
+            ScaleType = Enum.ScaleType.Stretch, 
+            
+            ZIndex = 0 -- Đặt lớp thấp nhất để không che nút bấm
+        })
+        
+        -- Nếu bạn muốn ảnh bo tròn theo góc của UI chính:
+        local BgCorner = Make("Corner", BackgroundIcon)
+    end
+    -- [KẾT THÚC CODE THÊM VÀO]
     
 	    -- [BẮT ĐẦU ĐOẠN CODE SỬA ĐỔI]
     local BgImageId = Configs.Image or Configs.Logo or "" 
