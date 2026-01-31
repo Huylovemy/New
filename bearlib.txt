@@ -597,7 +597,7 @@ function bear1lib:MakeWindow(Configs)
             ScaleType = Enum.ScaleType.Crop, 
             
             -- [SỬA LỖI 2] Tăng ZIndex lên để không bị các layer khác che mất
-            ZIndex = 2
+            ZIndex = 1
         })
         
         Make("Corner", BackgroundIcon)
