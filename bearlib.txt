@@ -549,28 +549,27 @@ function bear1lib:SetScale(NewScale)
 	UIScale, ScreenGui.Scale.Scale = NewScale, NewScale
 end
 
-function bear1lib:MakeWindow(Configs)
-	local WTitle = Configs[1] or Configs.Name or Configs.Title or "bear1 Library V5"
-	local WMiniText = Configs[2] or Configs.SubTitle or "by : Quang Huy"
-	
-	Settings.ScriptFile = Configs[3] or Configs.SaveFolder or false
-	
-	local function LoadFile()
-		-- Đã tắt chức năng load config cũ
-	end
-	
 	local UISizeX, UISizeY = unpack(bear1lib.Save.UISize)
-	local MainFrame = InsertTheme(Create("ImageButton", ScreenGui, {
+	
+    -- [SỬA 1] Tạo khung chính trong suốt (BackgroundTransparency = 1)
+		local MainFrame = InsertTheme(Create("ImageButton", ScreenGui, {
 		Size = UDim2.fromOffset(UISizeX, UISizeY),
 		Position = UDim2.new(0.5, -UISizeX/2, 0.5, -UISizeY/2),
-		BackgroundTransparency = 0.03,
+		
+		-- [SỬA 1] Đổi thành 1 để khung trong suốt (xóa nền đen)
+		BackgroundTransparency = 1, 
+		
 		Name = "Hub"
 	}), "Main")
-	Make("Gradient", MainFrame, {
-		Rotation = 45
-	})MakeDrag(MainFrame)
 
-    -- [CODE ĐÃ SỬA GỌN] Phần xử lý ảnh nền UI -----------------------
+	-- [SỬA 2] Thêm dấu -- để tắt Gradient (không cho phủ màu đen lên ảnh)
+	-- Make("Gradient", MainFrame, {
+	-- 	Rotation = 45
+	-- })
+	
+	MakeDrag(MainFrame)
+
+    -- Phần xử lý ảnh nền UI -----------------------
     local BgImageId = Configs.Image or Configs.Logo or "" 
     
     if #BgImageId > 0 then
@@ -580,29 +579,21 @@ function bear1lib:MakeWindow(Configs)
 
         local BackgroundIcon = Create("ImageLabel", MainFrame, {
             Name = "BackgroundWatermark",
-            Size = UDim2.fromScale(1, 1), -- 1,1 Là full khung (Ngập UI)
+            Size = UDim2.fromScale(1, 1), 
             Position = UDim2.fromScale(0, 0),
             BackgroundTransparency = 1,
             Image = BgImageId,
-            ImageTransparency = 0.85, -- Độ mờ (0.85 là vừa đẹp)
-            ScaleType = Enum.ScaleType.Stretch, -- Kéo dãn ảnh cho kín khung
+            
+            -- [SỬA 3] Đổi thành 0 để ảnh hiện rõ nét (làm nền chính)
+            ImageTransparency = 0, 
+            
+            ScaleType = Enum.ScaleType.Stretch,
             ZIndex = 0 
         })
-        -- Bo tròn ảnh theo khung UI chính
         Make("Corner", BackgroundIcon)
     end
-    -- [KẾT THÚC PHẦN ẢNH NỀN] ---------------------------------------
-	
-	local MainCorner = Make("Corner", MainFrame)
-	
-	local Components = Create("Folder", MainFrame, {
-		Name = "Components"
-	})
-    -- ... (Các phần code bên dưới giữ nguyên)
+    -- Kết thúc phần ảnh nền -----------------------
     
-    -- Lưu ý: Bạn nhớ sửa chữ "Comnection" thành "Connection" ở dòng ~404 trong file gốc nhé
-    -- Comnection:FireConnection("ThemeChanged", NewTheme)  <-- SAI
-    -- Connection:FireConnection("ThemeChanged", NewTheme)  <-- ĐÚNG
     
 	local function ControlSize()
 		local Pos1, Pos2 = ControlSize1.Position, ControlSize2.Position
